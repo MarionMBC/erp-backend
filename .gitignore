@@ -1,0 +1,26 @@
+# Dependencies and generated modules
+node_modules/
+dist/
+build/
+out/
+
+# Environment variables file
+.env
+
+# Logs files
+logs/
+*.log
+
+# Backup and temporary files
+*.bak
+*.swp
+*.tmp
+
+# Development tools
+devDependencies/
+
+# IDEs files
+.vscode/
+.idea/
+
+# Other files ignored by default

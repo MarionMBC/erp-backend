@@ -8,7 +8,7 @@ const __dirname = dirname(__filename);
 const PATH_ROUTER = __dirname;
 
 const cleanFileName = (fileName) => {
-    const clean = fileName.split('.').shift();
+    const clean = fileName.toLowerCase().split('.').shift();
     return clean;
 };
 
@@ -32,7 +32,8 @@ const importRoutes = async () => {
     for (const fileName of files) {
         const prefixRoute = cleanFileName(fileName);
         const routeModule = await import(`./${fileName}`);
-        router.use(`/${prefixRoute}`, routeModule.default);
+        console.log(routeModule.router);
+        router.use(`/${prefixRoute}`, routeModule.router);
     }
 };
 

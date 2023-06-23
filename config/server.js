@@ -1,9 +1,11 @@
 import express from "express";
 import router from "../routes/index.js";
+import dateFormatterMiddleware from "../middleware/dateFormatter.js";
 const app = express();
 
 //MiddleWare
 app.use(express.json());
+app.use(dateFormatterMiddleware);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 app.use(router);

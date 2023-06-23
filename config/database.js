@@ -1,4 +1,4 @@
-import mysql from "mysql2";
+mimport mysql from "mysql2";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -6,7 +6,7 @@ dotenv.config();
 // Configuración de la conexión a la base de datos
 const dbConfig = {
 	host: process.env.HOST,
-	user: process.env.USER,
+	user: 'sync',
 	password: process.env.PASSWORD,
 	port: process.env.DATABASEPORT,
 	database: process.env.DATABASE,
@@ -32,14 +32,14 @@ pool.getConnection((err, connection) => {
 });
 
 // Ejemplo de consulta utilizando el pool
-pool.query("SELECT * FROM usuarios", (err, results) => {
-	if (err) {
-		console.error("Error al ejecutar la consulta:", err);
-		return;
-	}
+// pool.query("SELECT * FROM usuarios", (err, results) => {
+// 	if (err) {
+// 		console.error("Error al ejecutar la consulta:", err);
+// 		return;
+// 	}
 
-	console.log("Resultados:", results);
-	return;
-});
+// 	console.log("Resultados:", results);
+// 	return;
+// });
 
 export default pool

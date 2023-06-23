@@ -16,14 +16,16 @@ const getCustomers = (request, response) => {
 		JOIN
 			customerType
 		ON
-			customerType.idCustomerFK = customers.id
+			customers.id = customerType.idCustomerFK
+		ORDER BY
+			id 
 		`;
 
 	pool.query(query, (error, result) => {
 		if (error) {
-			response.status(500).send(error);
+			response.status(500).json(error);
 		} else {
-			response.status(200).send(result);
+			response.status(200).json(result);
 		}
 	});
 };

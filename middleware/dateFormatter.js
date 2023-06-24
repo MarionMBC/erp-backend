@@ -8,28 +8,34 @@
 import moment from "moment";
 
 const dateFormatterMiddleware = (req, res, next) => {
-	// const regexDatetimeUTC = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+	const regexDatetimeUTC = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 
-	// const send = res.send;
+	const send = res.send;
 
-	// res.send = (body) => {
-	// 	Object.keys(body).map((key) => {
-			
+	res.send = (body) => {
+		const parsedBody = JSON.parse(body);
 
+		const keys = Object.keys(parsedBody[0]);
 
-	// 		// if (regexDatetimeUTC.test(value)) {
-	// 		// 	const formattedDateTime = moment
-	// 		// 		.utc(value)
-	// 		// 		.format("YYYY-MM-DD hh:mm:ss A");
-	// 		// 		body[key] = formattedDateTime;
-	// 		// }
-	// 	});
+		Object.keys(parsedBody).map((index) => {
+			keys.map((key) => {
+				const value = parsedBody[index][key];
 
-	// 	// body = JSON.stringify(parsedBody);
+				if (regexDatetimeUTC.test(value)) {
+					const formattedDateTime = moment
+						.utc(value)
+						.format("YYYY-MM-DD hh:mm:ss A");
 
-	// 	res.send = send;
-	// 	res.send(body);
-	// };
+					parsedBody[index][key] = formattedDateTime;
+				}
+			});
+		});
+
+		body = JSON.stringify(parsedBody);
+
+		res.send = send;
+		res.send(body);
+	};
 
 	next();
 };

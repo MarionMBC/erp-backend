@@ -2,6 +2,7 @@ import express from 'express';
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import {authMiddleware} from "../middlewares/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -32,8 +33,7 @@ const importRoutes = async () => {
     for (const fileName of files) {
         const prefixRoute = cleanFileName(fileName);
         const routeModule = await import(`./${fileName}`);
-        console.log(routeModule.router);
-        router.use(`/${prefixRoute}`, routeModule.router);
+        router.use(`/${prefixRoute}`, authMiddleware, routeModule.router);
     }
 };
 

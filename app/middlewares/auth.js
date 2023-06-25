@@ -20,6 +20,7 @@ const authMiddleware = async (req, res, next) => {
         next();
 
     } catch (e) {
+        console.log(e)
         return res.status(401).json({
             msg: "Error de autenticación"
         });
@@ -35,6 +36,7 @@ const getUserUID = async (uid) => {
        return e;
    }
 }
+
 
 export {
     authMiddleware

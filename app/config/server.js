@@ -5,7 +5,6 @@ const app = express();
 
 //MiddleWare
 app.use(express.json());
-app.use(dateFormatterMiddleware);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 app.use(router);

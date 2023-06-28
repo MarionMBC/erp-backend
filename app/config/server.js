@@ -1,6 +1,5 @@
 import express from "express";
 import router from "../routes/index.js";
-import dateFormatterMiddleware from "../middlewares/dateFormatter.js";
 const app = express();
 
 //MiddleWare

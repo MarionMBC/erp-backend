@@ -1,8 +1,9 @@
 import express from "express";
-import { getCustomers } from "../controllers/customers.js";
+import { getCustomers, getCustomerById } from "../controllers/customers.js";
 
 const router = express.Router();
 
-router.get("/", getCustomers);
+router.get("/getCustomers", getCustomers);
+router.get("/getCustomerById", getCustomerById);
 
 export { router };

@@ -1,7 +1,6 @@
 import pool from "../config/database.js";
 
-const getCustomers = (request, response) => {
-
+const getCustomers = async (request, response) => {
 	const query = `
 		SELECT 
 			customers.id as id,
@@ -21,13 +20,12 @@ const getCustomers = (request, response) => {
 			id 
 		`;
 
-	pool.query(query, (error, result) => {
-		if (error) {
-			response.status(500).json(error);
-		} else {
-			response.status(200).json(result);
-		}
-	});
+	try {
+		const result = await pool.query(query);
+		response.status(200).json(result);
+	} catch (error) {
+		response.status(500).json(error);
+	}
 };
 
 export { getCustomers };

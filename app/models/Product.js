@@ -1,4 +1,5 @@
 import pool from "../config/database.js";
+import {err400, succes200} from "../utils/statusList.js";
 
 class Product {
     constructor(productCode,
@@ -12,8 +13,7 @@ class Product {
                 images,
                 status,
                 elaborationDate,
-                expirationDate)
-    {
+                expirationDate) {
         this.productCode = productCode;
         this.name = name;
         this.description = description;
@@ -28,16 +28,66 @@ class Product {
         this.expirationDate = expirationDate;
     }
 
-    async getProducts (req, res) {
+    async getProducts(req, res) {
         try {
             const product = await pool.query("SELECT * FROM productBatch")
             return res.status(200).json(product);
+        } catch (error) {
+            res.status(400).json(err400())
         }
-        catch (error) {
-            console.log(error)
-            return res.status(400).json({
-                msg: 'Algo ha salido mal.'
-            })
+    }
+
+    async getProduct(req, res) {
+        const id = req.params.id;
+        try {
+            const [product] = await pool.query('Select * from products where id = ?', [id])
+            return res.send(product)
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json(err400())
+        }
+    }
+
+    async addProduct(req, res) {
+        try {
+            const {
+                productCode,
+                name,
+                description,
+                idProductCategoryFK,
+                idProductUnityFK,
+                taxablePrice,
+                taxEmptyPrice,
+                salePrice,
+                images,
+                status,
+                elaborationDate,
+                expirationDate,
+                createdAt,
+                updatedAt
+            } = req.body;
+            await pool.query(
+                'INSERT INTO PRODUCTS VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [
+                    productCode,
+                    name,
+                    description,
+                    idProductCategoryFK,
+                    idProductUnityFK,
+                    taxablePrice,
+                    taxEmptyPrice,
+                    salePrice,
+                    images,
+                    status,
+                    elaborationDate,
+                    expirationDate,
+                    createdAt,
+                    updatedAt
+                ])
+            return res.status(200).json(succes200('Prodducto agregado correctamente'))
+        } catch (e) {
+            console.log(e);
+            return res.status.json('Error al insertar el producto')
         }
     }
 

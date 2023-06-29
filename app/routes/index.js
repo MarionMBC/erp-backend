@@ -33,7 +33,7 @@ const importRoutes = async () => {
     for (const fileName of files) {
         const prefixRoute = cleanFileName(fileName);
         const routeModule = await import(`./${fileName}`);
-        router.use(`/${prefixRoute}`, authMiddleware, routeModule.router);
+        router.use(`/${prefixRoute}`, routeModule.router);
     }
 };
 

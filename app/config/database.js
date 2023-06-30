@@ -7,7 +7,7 @@ dotenv.config();
 // Configuración de la conexión a la base de datos
 const dbConfig = {
 	host: process.env.HOST,
-	user: "sync", // NO CAMBIAR
+	user: 'admin', // NO CAMBIAR
 	password: process.env.PASSWORD,
 	port: process.env.DATABASEPORT,
 	database: process.env.DATABASE,

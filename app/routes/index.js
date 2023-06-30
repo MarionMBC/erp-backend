@@ -32,7 +32,7 @@ const importRoutes = async () => {
     const files = await readDirectory(PATH_ROUTER);
     for (const fileName of files) {
         const prefixRoute = cleanFileName(fileName);
-        const routeModule = await import(`./${fileName}`);
+        const routeModule = await import(`./${fileName}/${fileName}.js`);
         router.use(`/${prefixRoute}`, routeModule.router);
     }
 };

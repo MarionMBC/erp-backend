@@ -1,16 +1,14 @@
 import express from 'express';
 import fs from 'fs/promises';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import {authMiddleware} from "../middlewares/auth.js";
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PATH_ROUTER = __dirname;
 
 const cleanFileName = (fileName) => {
-    const clean = fileName.toLowerCase().split('.').shift();
-    return clean;
+    return fileName.toLowerCase().split('.').shift();
 };
 
 const router = express.Router();
@@ -32,7 +30,7 @@ const importRoutes = async () => {
     const files = await readDirectory(PATH_ROUTER);
     for (const fileName of files) {
         const prefixRoute = cleanFileName(fileName);
-        const routeModule = await import(`./${fileName}/${fileName}.js`);
+        const routeModule = await import(`./${fileName}`);
         router.use(`/${prefixRoute}`, routeModule.router);
     }
 };

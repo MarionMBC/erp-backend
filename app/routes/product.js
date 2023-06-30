@@ -10,5 +10,6 @@ router.post('/addProduct', addProduct );
 router.patch('/updateProduct/:id', updateProduct);
 router.delete('/deleteProduct/:id', deleteProduct)
 
+
 export { router }
 

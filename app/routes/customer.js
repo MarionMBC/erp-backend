@@ -24,13 +24,24 @@ import {
 	updateNaturalCustomerDetailsByCustomerId,
 } from "../controllers/customer/naturalCustomerTypeDetails.js";
 
+import {
+	addCustomerContactInfo,
+	updateCustomerContactInfo,
+	updateCustomerContactInfoByCustomerId,
+} from "../controllers/customer/customerContactInfo.js";
+
 const router = express.Router();
 
-// =====================================CUSTOMERS==========================================
+// =====================================CUSTOMERS===========================================
 router.get("/getCustomers", getCustomers);
 router.get("/getCustomerById", getCustomerById);
 router.post("/addCustomer", addCustomer);
 router.put("/updateCustomer", updateCustomer);
+
+// =================================CUSTOMERCONTACTINFO=====================================
+router.post("/addCustomerContactInfo", addCustomerContactInfo);
+router.put("/updateCustomerContactInfo", updateCustomerContactInfo);
+router.put("/updateCustomerContactInfoByCustomerId", updateCustomerContactInfoByCustomerId);
 
 // ===================================CUSTOMERTYPE==========================================
 router.post("/addCustomerType", addCustomerType);

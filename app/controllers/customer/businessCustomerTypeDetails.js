@@ -51,7 +51,7 @@ const updateBusinessCustomerDetails = async (request, response) => {
 			rtn,
 			hasCredit,
 			creditAmount,
-            id
+			id,
 		]);
 
 		response.status(200).json(result);
@@ -60,4 +60,40 @@ const updateBusinessCustomerDetails = async (request, response) => {
 	}
 };
 
-export { addBusinessCustomerDetails, updateBusinessCustomerDetails };
+const updateBusinessCustomerDetailsByCustomerId = async (request, response) => {
+	const { idCustomerTypeFK, businessName, rtn, hasCredit, creditAmount } =
+		request.body;
+
+	const query = `
+        UPDATE 
+            businessCustomerTypeDetails 
+        SET 
+            businessName = ?, 
+            rtn = ?, 
+            hasCredit = ?, 
+            creditAmount = ?,
+            updatedAt = CURRENT_TIMESTAMP
+        WHERE
+			idCustomerTypeFK = ?
+        `;
+
+	try {
+		const [result] = await pool.query(query, [
+			businessName,
+			rtn,
+			hasCredit,
+			creditAmount,
+			idCustomerTypeFK,
+		]);
+
+		response.status(200).json(result);
+	} catch (error) {
+		response.status(500).json(error);
+	}
+};
+
+export {
+	addBusinessCustomerDetails,
+	updateBusinessCustomerDetails,
+	updateBusinessCustomerDetailsByCustomerId,
+};

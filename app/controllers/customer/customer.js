@@ -21,8 +21,8 @@ const getCustomers = async (request, response) => {
 		`;
 
 	try {
-		const result = await pool.query(query);
-		response.status(200).json(result[0]);
+		const [result] = await pool.query(query);
+		response.status(200).json(result);
 	} catch (error) {
 		response.status(500).json(error);
 	}
@@ -69,11 +69,68 @@ const getCustomerById = async (request, response) => {
 	`;
 
 	try {
-		const result = await pool.query(query, [request.body.id]);
-		response.status(200).json(result[0]);
+		const [result] = await pool.query(query, [request.body.id]);
+		response.status(200).json(result);
 	} catch (error) {
 		response.status(500).json(error);
 	}
 };
 
-export { getCustomers, getCustomerById };
+const addCustomer = async (request, response) => {
+	const { firstNames, lastNames, country, city, direction } = request.body;
+
+	const query = `
+		INSERT INTO 
+			customers (firstNames, lastNames, country, city, direction)
+		VALUES 
+			(?, ?, ?, ?, ?)
+		`;
+
+	try {
+		const [result] = await pool.query(query, [
+			firstNames,
+			lastNames,
+			country,
+			city,
+			direction,
+		]);
+
+		response.status(200).json(result);
+	} catch (e) {
+		response.status(500).json(e);
+	}
+};
+
+const updateCustomer = async (request, response) => {
+	const { firstNames, lastNames, country, city, direction, id } =
+		request.body;
+
+	const query = `
+		UPDATE 
+			customers
+		SET 
+			firstNames = ?, 
+			lastNames = ?, 
+			country = ?, 
+			city = ?, 
+			direction = ?, 
+			updatedAt = CURRENT_TIMESTAMP
+		WHERE 
+			id = ?
+		`;
+	try {
+		const [result] = await pool.query(query, [
+			firstNames,
+			lastNames,
+			country,
+			city,
+			direction,
+			id,
+		]);
+		response.status(200).json(result);
+	} catch (e) {
+		response.status(500).json(e);
+	}
+};
+
+export { getCustomers, getCustomerById, addCustomer, updateCustomer };

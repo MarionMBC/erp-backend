@@ -20,6 +20,7 @@ const dbConfig = {
 	},
 };
 
+
 // Crear el pool de conexiones
 const pool = mysql.createPool(dbConfig);
 

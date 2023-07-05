@@ -1,5 +1,3 @@
-
-
 import pool from "../../config/database.js"
 
 //Retorna todas las facturas

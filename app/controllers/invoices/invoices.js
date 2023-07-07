@@ -2,7 +2,7 @@ import pool from "../../config/database.js"
 
 //Retorna todas las facturas
 const getInvoices = async (request, response) => {
-    const query = `SELECT * FROM INVOICES`;
+    const query = `SELECT * FROM invoices`;
 
     try{
         const [invoices] = await pool.query(query);

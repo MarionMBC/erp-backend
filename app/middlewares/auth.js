@@ -12,10 +12,12 @@ const authMiddleware = async (req, res, next) => {
     try {
         const authToken = req.headers.authorization;
         const decodedToken = await admin.auth().verifyIdToken(authToken);
+        console.log(decodedToken);
         const userUID = await getUserUID(decodedToken.uid);
+        const user = await admin.auth().getUser(userUID);
 
         userUID ?? (() => { throw new Error('Usuario no encontrado'); })();
-
+        req.user = user;
         req.userUID = userUID;
         next();
 
@@ -28,14 +30,18 @@ const authMiddleware = async (req, res, next) => {
 }
 
 const getUserUID = async (uid) => {
-   try {
-       const [user] = await pool.query('SELECT uid FROM USER WHERE uid = ?', [uid])
-       console.log(user)
-       return user.length > 0 ? user.uid : null;
-   } catch (e) {
-       return e;
-   }
+    try {
+        const [user] = await pool.query('select uid from user where uid= ?', [uid])
+        return user.length > 0 ? user[0].uid : null;
+    } catch (e) {
+        return e;
+    }
 }
+
+
+
+
+
 
 
 export {

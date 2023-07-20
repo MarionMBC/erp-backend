@@ -4,6 +4,6 @@ import { addUser } from "../controllers/user/user.js";
 const router = express.Router();
 
 // =====================================USERS===========================================
-router.post("/getCustomers", addUser);
+router.post("/addUser", addUser);
 
 export { router };

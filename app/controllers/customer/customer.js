@@ -133,4 +133,50 @@ const updateCustomer = async (request, response) => {
 	}
 };
 
-export { getCustomers, getCustomerById, addCustomer, updateCustomer };
+const getCustomerStatistics = async (request, response) => {
+	const query = `
+		SELECT 
+			COUNT(*) AS 'registeredCustomrs',
+			(
+				SELECT 
+					COUNT(*)
+				FROM
+					customerType
+				WHERE
+					name = 'Empresarial'
+			) AS 'enterpriseCustomers',
+			(
+				SELECT 
+					COUNT(*)
+				FROM
+					customerType
+				WHERE
+					name = 'Natural'
+			) AS 'naturalCustomers',
+			(
+				SELECT 
+					COUNT(*)
+				FROM
+					customerType
+				WHERE
+					MONTH(createdAt) = MONTH(CURRENT_TIMESTAMP())
+			) AS 'customerRegisteredInCurrentMonth'
+		FROM
+			customers
+		`;
+
+	try {
+		const [result] = await pool.query(query);
+		response.status(200).json(result);
+	} catch (error) {
+		response.status(500).json(error);
+	}
+};
+
+export {
+	getCustomers,
+	getCustomerById,
+	addCustomer,
+	updateCustomer,
+	getCustomerStatistics,
+};

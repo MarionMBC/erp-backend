@@ -4,6 +4,7 @@ import {
 	getCustomerById,
 	addCustomer,
 	updateCustomer,
+	getCustomerStatistics,
 } from "../controllers/customer/customer.js";
 
 import {
@@ -37,11 +38,15 @@ router.get("/getCustomers", getCustomers);
 router.get("/getCustomerById", getCustomerById);
 router.post("/addCustomer", addCustomer);
 router.put("/updateCustomer", updateCustomer);
+router.get("/getCustomerStatistics", getCustomerStatistics);
 
 // =================================CUSTOMERCONTACTINFO=====================================
 router.post("/addCustomerContactInfo", addCustomerContactInfo);
 router.put("/updateCustomerContactInfo", updateCustomerContactInfo);
-router.put("/updateCustomerContactInfoByCustomerId", updateCustomerContactInfoByCustomerId);
+router.put(
+	"/updateCustomerContactInfoByCustomerId",
+	updateCustomerContactInfoByCustomerId
+);
 
 // ===================================CUSTOMERTYPE==========================================
 router.post("/addCustomerType", addCustomerType);

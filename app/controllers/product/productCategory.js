@@ -115,4 +115,3 @@ export const getProductCategoryStatusTrue = async (req, res) => {
         return error500(500, res, 'Algo ha salido mal', e);
     }
 }
-

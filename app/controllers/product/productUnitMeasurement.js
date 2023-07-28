@@ -24,3 +24,68 @@ export const getProductUnitMeasurement = async (req, res) => {
     }
 }
 
+
+export const updateProductUnitMeasurement = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const {name, symbol } = req.body;
+        const [productUnitMeasurement] = await pool.query('UPDATE productUnitsMeasurement set name = IFNULL(?, name), symbol = IFNULL(?, symbol) where id = ?', [name, symbol, id])
+        const [productUnitMeasurementUpdated] = await pool.query('SELECT * FROM productUnitsMeasurement where id=?', [id]);
+        return productUnitMeasurement.affectedRows > 0 && productUnitMeasurementUpdated.length > 0 ?
+            res.status(200).json({
+                mgs: 'Se ha modificado la unidad de medida correctamente.',
+                productUnitMeasurementUpdated
+            }) : res.status(404).json({
+                msg: 'No se ha encontrado la unidad de medida.'
+            })
+
+    } catch (error) {
+        return res.status(500).json(
+            {
+                msg: 'Algo ha salido mal',
+                error: error
+            }
+        )
+
+    }
+}
+
+
+export const deleteProductUnitMeasurement = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const [productUnitMeasurement] = await pool.query('DELETE FROM productUnitsMeasurement WHERE id=?', [id]);
+        return productUnitMeasurement.affectedRows > 0 ?
+            res.status(200).json({
+                mgs: 'Se ha eliminado la unidad de medida correctamente.',
+            }) : res.status(404).json({
+                msg: 'No se ha encontrado la unidad de medida.'
+            })
+    } catch (e) {
+        return res.status(500).json({
+            msg: 'Algo ha salido mal',
+            error: e
+        });
+    }
+}
+
+export const createProductUnitMeasurement = async (req, res) => {
+    try {
+        const {name, symbol} = req.body;
+        const [productUnitMeasurement] = await pool.query('INSERT INTO productUnitsMeasurement (name, symbol) values (?, ?)', [name, symbol]);
+        const [productUnitMeasurementCreated] = await pool.query('SELECT * FROM productUnitsMeasurement where id=?', [productUnitMeasurement.insertId]);
+        return productUnitMeasurement.affectedRows > 0 && productUnitMeasurementCreated.length > 0 ?
+            res.status(200).json({
+                mgs: 'Se ha creado la unidad de medida correctamente.',
+                productUnitMeasurementCreated
+            }) : res.status(404).json({
+                msg: 'No se ha encontrado la unidad de medida.'
+            })
+    } catch (e) {
+        return res.status(500).json({
+            msg: 'Algo ha salido mal',
+            error: e
+        });
+    }
+}
+

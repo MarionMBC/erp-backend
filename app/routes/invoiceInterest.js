@@ -4,7 +4,7 @@ import {
 	getInterestById,
 	addInterest,
 	updateInterest
-} from "../controllers/invoices/invoiceInterest.js";
+} from "../controllers/invoice/invoiceInterest.js";
 
 
 const router = express.Router();

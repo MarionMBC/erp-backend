@@ -4,7 +4,7 @@ import {
 	getOutstandingInvoiceById,
 	addOutstandingInvoice,
 	updateOutstandingInvoice
-} from "../controllers/invoices/outstandingInvoices.js";
+} from "../controllers/invoice/outstandingInvoices.js";
 
 
 const router = express.Router();

@@ -4,7 +4,7 @@ import {
 	getInvoiceById,
 	addInvoice,
 	updateInvoice,
-} from "../controllers/invoices/invoices.js";
+} from "../controllers/invoice/invoice.js";
 
 
 const router = express.Router();

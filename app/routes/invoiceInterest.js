@@ -10,8 +10,8 @@ import {
 const router = express.Router();
 
 router.get('/getInterest', 	getInterest);
-router.get('/getInterestById', getInterestById);
+router.get('/getInterestById/:id', getInterestById);
 router.post('/addInterest', addInterest);
-router.patch('/updateInterest', updateInterest);
+router.patch('/updateInterest/:id', updateInterest);
 
 export { router };

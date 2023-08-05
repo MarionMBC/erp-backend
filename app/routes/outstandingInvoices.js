@@ -10,8 +10,8 @@ import {
 const router = express.Router();
 
 router.get('/getOutstandingInvoices', 	getOutstandingInvoices);
-router.get('/getOutstandingInvoiceById', getOutstandingInvoiceById);
+router.get('/getOutstandingInvoiceById/:id', getOutstandingInvoiceById);
 router.post('/addOutstandingInvoice', addOutstandingInvoice);
-router.patch('/updateOutstandingInvoice', updateOutstandingInvoice);
+router.patch('/updateOutstandingInvoice/:id', updateOutstandingInvoice);
 
 export { router };

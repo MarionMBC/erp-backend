@@ -3,21 +3,9 @@ import pool from "../../config/database.js";
 const getCustomers = async (request, response) => {
 	const query = `
 		SELECT 
-			customers.id as id,
-			customers.firstNames AS customerFirstName,
-			customers.lastNames AS customerLastName,
-			customers.country AS customerCountry,
-			customers.city AS customerCity,
-			customers.createdAt AS customerAddedAt,
-			customerType.name AS customerType
+			*
 		FROM 
 			customers
-		JOIN
-			customerType
-		ON
-			customers.id = customerType.idCustomerFK
-		ORDER BY
-			id 
 		`;
 
 	try {
@@ -34,6 +22,7 @@ const getCustomerById = async (request, response) => {
 			customers.id AS id,
 			customers.firstNames AS customerFirstName,
 			customers.lastNames AS customerLastName,
+			customerType.name AS customerType,
 			customers.country AS customerCountry,
 			customers.city AS customerCity,
 			customers.createdAt AS customerAddedAt,
@@ -51,7 +40,7 @@ const getCustomerById = async (request, response) => {
 		JOIN
 			customerType
 		ON
-			customers.id = customerType.idCustomerFK
+			customers.idCustomerTypeFK = customerType.id
 		JOIN 
 			customerContactInfo
 		ON
@@ -59,11 +48,11 @@ const getCustomerById = async (request, response) => {
 		LEFT JOIN
 			naturalCustomerTypeDetails	
 		ON
-			customerType.id = naturalCustomerTypeDetails.idCustomerTypeFK
+			customers.id = naturalCustomerTypeDetails.idCustomerFK
 		LEFT JOIN
 			businessCustomerTypeDetails	
 		ON
-			customerType.id = businessCustomerTypeDetails.idCustomerTypeFK
+			customers.id = businessCustomerTypeDetails.idCustomerFK
 		wHERE
 			customers.id = ?
 	`;
@@ -77,13 +66,20 @@ const getCustomerById = async (request, response) => {
 };
 
 const addCustomer = async (request, response) => {
-	const { firstNames, lastNames, country, city, direction } = request.body;
+	const {
+		firstNames,
+		lastNames,
+		country,
+		city,
+		direction,
+		idCustomerTypeFK,
+	} = request.body;
 
 	const query = `
 		INSERT INTO 
-			customers (firstNames, lastNames, country, city, direction)
+			customers (firstNames, lastNames, country, city, direction, idCustomerTypeFK)
 		VALUES 
-			(?, ?, ?, ?, ?)
+			(?, ?, ?, ?, ?, ?)
 		`;
 
 	try {
@@ -102,8 +98,15 @@ const addCustomer = async (request, response) => {
 };
 
 const updateCustomer = async (request, response) => {
-	const { firstNames, lastNames, country, city, direction, id } =
-		request.body;
+	const {
+		firstNames,
+		lastNames,
+		country,
+		city,
+		direction,
+		idCustomerTypeFK,
+		id,
+	} = request.body;
 
 	const query = `
 		UPDATE 
@@ -114,6 +117,7 @@ const updateCustomer = async (request, response) => {
 			country = ?, 
 			city = ?, 
 			direction = ?, 
+			idCustomerTypeFK = ?
 			updatedAt = CURRENT_TIMESTAMP
 		WHERE 
 			id = ?
@@ -125,6 +129,7 @@ const updateCustomer = async (request, response) => {
 			country,
 			city,
 			direction,
+			idCustomerTypeFK,
 			id,
 		]);
 		response.status(200).json(result);

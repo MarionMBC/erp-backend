@@ -1,5 +1,21 @@
 import pool from "../../config/database.js";
 
+const getCustomerTypes = async (request, response) => {
+	const query = `
+		SELECT 
+			*
+		FROM
+			customerType
+	`;
+
+	try {
+		const [result] = await pool.execute(query);
+		response.status(200).json(result);
+	} catch (e) {
+		response.status(500).json(e);
+	}
+};
+
 const addCustomerType = async (request, response) => {
 	const { idCustomerFK, name } = request.body;
 	const query = `
@@ -56,4 +72,9 @@ const updateCustomerTypeByCustomerId = async (request, response) => {
 	}
 };
 
-export { addCustomerType, updateCustomerType, updateCustomerTypeByCustomerId };
+export {
+	getCustomerTypes,
+	addCustomerType,
+	updateCustomerType,
+	updateCustomerTypeByCustomerId,
+};

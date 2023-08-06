@@ -3,9 +3,18 @@ import pool from "../../config/database.js";
 const getCustomers = async (request, response) => {
 	const query = `
 		SELECT 
-			*
+			customers.id AS id,
+			customerType.name AS customerType,
+			customers.firstNames AS firstNames,
+			customers.lastNames AS lastNames,
+			customers.country AS country,
+			customers.city AS city
 		FROM 
 			customers
+		JOIN
+			customerType
+		ON
+			customerType.id = customers.idCustomerTypeFK
 		`;
 
 	try {

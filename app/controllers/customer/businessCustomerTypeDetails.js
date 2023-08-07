@@ -1,28 +1,35 @@
 import pool from "../../config/database.js";
 
-const addBusinessCustomerDetails = async (request, response) => {
-	const { idCustomerTypeFK, businessName, rtn, hasCredit, creditAmount } =
-		request.body;
+const addBusinessCustomerDetails = async (
+	businessCustomerDetailsProperties
+) => {
+	try {
+		const {
+			idCustomerFK,
+			businessName,
+			businessRtn,
+			hasCredit,
+			creditAmount,
+		} = businessCustomerDetailsProperties;
 
-	const query = `
-        INSERT INTO 
-            businessCustomerTypeDetails (idCustomerTypeFK, businessName, rtn, hasCredit, creditAmount)
-        VALUES
-            (?, ?, ?, ?, ?);
+		const query = `
+			INSERT INTO 
+				businessCustomerTypeDetails (idCustomerFK, businessName, rtn, hasCredit, creditAmount)
+			VALUES
+				(?, ?, ?, ?, ?);
         `;
 
-	try {
 		const [result] = await pool.query(query, [
-			idCustomerTypeFK,
+			idCustomerFK,
 			businessName,
-			rtn,
+			businessRtn,
 			hasCredit,
 			creditAmount,
 		]);
 
-		response.status(200).json(result);
+		return result;
 	} catch (error) {
-		response.status(500).json(error);
+		return error;
 	}
 };
 

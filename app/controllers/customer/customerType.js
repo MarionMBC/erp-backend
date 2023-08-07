@@ -18,19 +18,19 @@ const getCustomerTypes = async (request, response) => {
 
 const addCustomerType = async (request, response) => {
 	const { idCustomerFK, name } = request.body;
-	const query = `
-        INSERT INTO
-            customerType (idCustomerFK, name)
-        VALUES
-            (?,?)
-    `;
+	// const query = `
+    //     INSERT INTO
+    //         customerType (idCustomerFK, name)
+    //     VALUES
+    //         (?,?)
+    // `;
 
-	try {
-		const [result] = await pool.execute(query, [idCustomerFK, name]);
-		response.status(200).json(result);
-	} catch (e) {
-		response.status(500).json(e);
-	}
+	// try {
+	// 	const [result] = await pool.execute(query, [idCustomerFK, name]);
+	// 	response.status(200).json(result);
+	// } catch (e) {
+	// 	response.status(500).json(e);
+	// }
 };
 
 const updateCustomerType = async (request, response) => {

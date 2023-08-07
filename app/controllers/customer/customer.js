@@ -1,4 +1,7 @@
 import pool from "../../config/database.js";
+import { addCustomerContactInfo } from "./customerContactInfo.js";
+import { addNaturalCustomerDetails } from "./naturalCustomerTypeDetails.js";
+import { addBusinessCustomerDetails } from "./businessCustomerTypeDetails.js";
 
 const getCustomers = async (request, response) => {
 	const query = `
@@ -8,7 +11,8 @@ const getCustomers = async (request, response) => {
 			customers.firstNames AS firstNames,
 			customers.lastNames AS lastNames,
 			customers.country AS country,
-			customers.city AS city
+			customers.city AS city,
+			customers.direction AS direction
 		FROM 
 			customers
 		JOIN
@@ -75,30 +79,61 @@ const getCustomerById = async (request, response) => {
 };
 
 const addCustomer = async (request, response) => {
-	const {
-		firstNames,
-		lastNames,
-		country,
-		city,
-		direction,
-		idCustomerTypeFK,
-	} = request.body;
+	try {
+		const {
+			idCustomerTypeFK,
+			firstNames,
+			lastNames,
+			city,
+			country,
+			direction,
+			phoneNumber,
+			email,
+			naturalRtn,
+			businessName,
+			businessRtn,
+			hasCredit,
+			creditAmount,
+		} = request.body;
 
-	const query = `
-		INSERT INTO 
-			customers (firstNames, lastNames, country, city, direction, idCustomerTypeFK)
-		VALUES 
-			(?, ?, ?, ?, ?, ?)
+		const query = `
+			INSERT INTO
+				customers (firstNames, lastNames, country, city, direction, idCustomerTypeFK)
+			VALUES
+				(?, ?, ?, ?, ?, ?)
 		`;
 
-	try {
 		const [result] = await pool.query(query, [
 			firstNames,
 			lastNames,
 			country,
 			city,
 			direction,
+			idCustomerTypeFK,
 		]);
+
+		const idCustomerFK = result.insertId;
+
+		addCustomerContactInfo({
+			idCustomerFK,
+			phoneNumber,
+			email,
+		});
+
+		if (businessName === null) {
+			addNaturalCustomerDetails({
+				idCustomerFK,
+				naturalRtn,
+			});
+		} else {
+			addBusinessCustomerDetails({
+				idCustomerFK,
+				businessName,
+				businessRtn,
+				hasCredit,
+				creditAmount,
+			});
+		}
 
 		response.status(200).json(result);
 	} catch (e) {

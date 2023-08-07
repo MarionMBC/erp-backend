@@ -1,24 +1,23 @@
 import pool from "../../config/database.js";
 
-const addCustomerContactInfo = async (request, response) => {
-	const { idCustomerFK, phoneNumber, email } = request.body;
-
-	const query = `
-        INSERT INTO 
-            customerContactInfo (idCustomerFK, phoneNumber, email)
-        VALUES 
-            (?,?,?)
-    `;
-
+const addCustomerContactInfo = async (contactInfoProperties) => {
 	try {
+		const { idCustomerFK, phoneNumber, email } = contactInfoProperties;
+
+		const query = `
+			INSERT INTO 
+				customerContactInfo (idCustomerFK, phoneNumber, email)
+			VALUES 
+				(?,?,?)
+    	`;
 		const [result] = await pool.query(query, [
 			idCustomerFK,
 			phoneNumber,
 			email,
 		]);
-		response.status(200).json(result);
+		return result;
 	} catch (err) {
-		response.status(500).json(err);
+		return err;
 	}
 };
 
@@ -74,4 +73,8 @@ const updateCustomerContactInfoByCustomerId = async (request, response) => {
 	}
 };
 
-export { addCustomerContactInfo, updateCustomerContactInfo, updateCustomerContactInfoByCustomerId };
+export {
+	addCustomerContactInfo,
+	updateCustomerContactInfo,
+	updateCustomerContactInfoByCustomerId,
+};

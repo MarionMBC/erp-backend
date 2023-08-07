@@ -1,21 +1,21 @@
 import pool from "../../config/database.js";
 
-const addNaturalCustomerDetails = async (request, response) => {
-	const idCustomerTypeFK = request.body.idCustomerTypeFK;
-	const rtn = request.body.rtn === undefined ? null : request.body.rtn;
-
-	const query = `
-        INSERT INTO 
-            naturalCustomerTypeDetails (idCustomerTypeFK, rtn)
-        VALUES
-            (? ,?)
-    `;
-
+const addNaturalCustomerDetails = async (naturalCustomerDetailsProperties) => {
 	try {
-		const [result] = await pool.query(query, [idCustomerTypeFK, rtn]);
-		response.status(200).json(result);
+		const { idCustomerFK, naturalRtn } = naturalCustomerDetailsProperties;
+
+		const query = `
+			INSERT INTO 
+				naturalCustomerTypeDetails (idCustomerFK, rtn)
+			VALUES
+				(? ,?)
+    	`;
+
+		const [result] = await pool.query(query, [idCustomerFK, naturalRtn]);
+
+		return result;
 	} catch (error) {
-		response.status(500).json(500);
+		return error;
 	}
 };
 

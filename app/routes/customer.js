@@ -22,6 +22,7 @@ import {
 } from "../controllers/customer/businessCustomerTypeDetails.js";
 
 import {
+	getNaturalCustomers,
 	addNaturalCustomerDetails,
 	updateNaturalCustomerDetails,
 	updateNaturalCustomerDetailsByCustomerId,
@@ -67,6 +68,7 @@ router.put(
 );
 
 // ==============================NATURALCUSTOMERTYPEDETAILS=================================
+router.get("/getNaturalCustomers", getNaturalCustomers);
 router.post("/addNaturalCustomerDetails", addNaturalCustomerDetails);
 router.put("/updateNaturalCustomerDetails", updateNaturalCustomerDetails);
 router.put(

@@ -1,5 +1,31 @@
 import pool from "../../config/database.js";
 
+const getNaturalCustomers = async (request, response) => {
+	const query = `
+		SELECT 
+			customers.id AS id,
+			customers.firstNames AS firstNames,
+			customers.lastNames AS lastNames,
+			customers.country AS country,
+			customers.city AS city,
+			customers.direction AS direction,
+			nctd.rtn AS rtn
+		FROM 
+			customers
+		JOIN 
+			naturalCustomerTypeDetails AS nctd
+		ON
+			nctd.idCustomerFK = customers.id
+		`;
+
+	try {
+		const [result] = await pool.query(query);
+		response.status(200).json(result);
+	} catch (error) {
+		response.status(500).json(error);
+	}
+};
+
 const addNaturalCustomerDetails = async (naturalCustomerDetailsProperties) => {
 	try {
 		const { idCustomerFK, naturalRtn } = naturalCustomerDetailsProperties;
@@ -66,6 +92,7 @@ const updateNaturalCustomerDetailsByCustomerId = async (request, response) => {
 };
 
 export {
+	getNaturalCustomers,
 	addNaturalCustomerDetails,
 	updateNaturalCustomerDetails,
 	updateNaturalCustomerDetailsByCustomerId,

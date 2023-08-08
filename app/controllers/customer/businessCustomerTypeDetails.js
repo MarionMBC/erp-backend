@@ -10,7 +10,7 @@ const getBusinessCustomers = async (request, response) => {
 			customers.city AS city,
 			bctd.businessName AS businessName,
 			IF(bctd.hasCredit = 0, 'No', 'Sí') AS hasCredit,
-			bctd.creditAmount AS creditAmount
+			FORMAT(bctd.creditAmount, 0) AS creditAmount
 		FROM 
 			customers
 		JOIN 

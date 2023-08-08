@@ -1,5 +1,33 @@
 import pool from "../../config/database.js";
 
+const getBusinessCustomers = async (request, response) => {
+	const query = `
+		SELECT 
+			customers.id AS id,
+			customers.firstNames AS firstNames,
+			customers.lastNames AS lastNames,
+			customers.country AS country,
+			customers.city AS city,
+			customers.direction AS direction,
+			bctd.businessName AS businessName,
+			bctd.hasCredit AS hasCredit,
+			bctd.creditAmount AS creditAmount
+		FROM 
+			customers
+		JOIN 
+			businessCustomerTypeDetails AS bctd
+		ON
+			bctd.idCustomerFK = customers.id
+		`;
+
+	try {
+		const [result] = await pool.query(query);
+		response.status(200).json(result);
+	} catch (error) {
+		response.status(500).json(error);
+	}
+};
+
 const addBusinessCustomerDetails = async (
 	businessCustomerDetailsProperties
 ) => {
@@ -100,6 +128,7 @@ const updateBusinessCustomerDetailsByCustomerId = async (request, response) => {
 };
 
 export {
+	getBusinessCustomers,
 	addBusinessCustomerDetails,
 	updateBusinessCustomerDetails,
 	updateBusinessCustomerDetailsByCustomerId,

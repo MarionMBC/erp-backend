@@ -222,10 +222,12 @@ const getCustomerStatistics = async (request, response) => {
 	}
 };
 
+
+
 export {
 	getCustomers,
 	getCustomerById,
 	addCustomer,
 	updateCustomer,
-	getCustomerStatistics,
+	getCustomerStatistics
 };

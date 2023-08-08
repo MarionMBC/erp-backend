@@ -15,6 +15,7 @@ import {
 } from "../controllers/customer/customerType.js";
 
 import {
+	getBusinessCustomers,
 	addBusinessCustomerDetails,
 	updateBusinessCustomerDetails,
 	updateBusinessCustomerDetailsByCustomerId,
@@ -57,6 +58,7 @@ router.put("/updateCustomerType", updateCustomerType);
 router.put("/updateCustomerTypeByCustomerId", updateCustomerTypeByCustomerId);
 
 // ============================BUSINESSCUSTOMERTYPEDETAILS==================================
+router.get("/getBusinessCustomers", getBusinessCustomers);
 router.post("/addBusinessCustomerDetails", addBusinessCustomerDetails);
 router.put("/updateBusinessCustomerDetails", updateBusinessCustomerDetails);
 router.put(

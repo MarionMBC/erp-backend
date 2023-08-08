@@ -8,7 +8,7 @@ const getNaturalCustomers = async (request, response) => {
 			customers.lastNames AS lastNames,
 			customers.country AS country,
 			customers.city AS city,
-			nctd.rtn AS rtn
+			IF( ISNULL(nctd.rtn) = 1, 'N/D', nctd.rtn) AS rtn
 		FROM 
 			customers
 		JOIN 

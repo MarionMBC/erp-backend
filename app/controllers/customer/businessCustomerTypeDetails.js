@@ -8,7 +8,6 @@ const getBusinessCustomers = async (request, response) => {
 			customers.lastNames AS lastNames,
 			customers.country AS country,
 			customers.city AS city,
-			customers.direction AS direction,
 			bctd.businessName AS businessName,
 			IF(bctd.hasCredit = 0, 'No', 'Sí') AS hasCredit,
 			bctd.creditAmount AS creditAmount

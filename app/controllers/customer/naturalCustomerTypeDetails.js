@@ -8,7 +8,6 @@ const getNaturalCustomers = async (request, response) => {
 			customers.lastNames AS lastNames,
 			customers.country AS country,
 			customers.city AS city,
-			customers.direction AS direction,
 			nctd.rtn AS rtn
 		FROM 
 			customers

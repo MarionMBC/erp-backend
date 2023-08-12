@@ -94,11 +94,17 @@ const updateBusinessCustomerDetails = async (request, response) => {
 	}
 };
 
-const updateBusinessCustomerDetailsByCustomerId = async (request, response) => {
-	const { idCustomerTypeFK, businessName, rtn, hasCredit, creditAmount } =
-		request.body;
+const updateBusinessCustomerDetailsByCustomerId = async (
+	businessCustomerDetailsProperties
+) => {
 
-	const query = `
+	console.log(businessCustomerDetailsProperties);
+
+	try {
+		const { id, businessName, businessRtn, hasCredit, creditAmount } =
+			businessCustomerDetailsProperties;
+
+		const query = `
         UPDATE 
             businessCustomerTypeDetails 
         SET 
@@ -106,23 +112,21 @@ const updateBusinessCustomerDetailsByCustomerId = async (request, response) => {
             rtn = ?, 
             hasCredit = ?, 
             creditAmount = ?,
-            updatedAt = CURRENT_TIMESTAMP
+			updatedAt = CURRENT_TIMESTAMP
         WHERE
-			idCustomerTypeFK = ?
+			idCustomerFK = ?
         `;
 
-	try {
 		const [result] = await pool.query(query, [
 			businessName,
-			rtn,
+			businessRtn,
 			hasCredit,
 			creditAmount,
-			idCustomerTypeFK,
+			id,
 		]);
-
-		response.status(200).json(result);
+		return result;
 	} catch (error) {
-		response.status(500).json(error);
+		return error;
 	}
 };
 

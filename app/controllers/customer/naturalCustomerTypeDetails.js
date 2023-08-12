@@ -68,25 +68,26 @@ const updateNaturalCustomerDetails = async (request, response) => {
 	}
 };
 
-const updateNaturalCustomerDetailsByCustomerId = async (request, response) => {
-	const idCustomerTypeFK = request.body.idCustomerTypeFK;
-	const rtn = request.body.rtn === undefined ? null : request.body.rtn;
+const updateNaturalCustomerDetailsByCustomerId = async (
+	naturalCustomerDetailsProperties
+) => {
+	try {
+		const { id, naturalRtn } = naturalCustomerDetailsProperties;
 
-	const query = `
+		const query = `
         UPDATE 
             naturalCustomerTypeDetails
         SET
             rtn = ?,
-            updatedAt =  CURRENT_TIMESTAMP
+			updatedAt = CURRENT_TIMESTAMP
         WHERE
-            idCustomerTypeFK = ?
+            idCustomerFK = ?
     `;
 
-	try {
-		const [result] = await pool.query(query, [rtn, idCustomerTypeFK]);
-		response.status(200).json(result);
+		const [result] = await pool.query(query, [naturalRtn, id]);
+		return result;
 	} catch (error) {
-		response.status(500).json(500);
+		return error;
 	}
 };
 

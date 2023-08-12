@@ -1,7 +1,13 @@
 import pool from "../../config/database.js";
 import { addCustomerContactInfo } from "./customerContactInfo.js";
-import { addNaturalCustomerDetails } from "./naturalCustomerTypeDetails.js";
-import { addBusinessCustomerDetails } from "./businessCustomerTypeDetails.js";
+import {
+	addNaturalCustomerDetails,
+	updateNaturalCustomerDetailsByCustomerId,
+} from "./naturalCustomerTypeDetails.js";
+import {
+	addBusinessCustomerDetails,
+	updateBusinessCustomerDetailsByCustomerId,
+} from "./businessCustomerTypeDetails.js";
 
 const getCustomers = async (request, response) => {
 	const query = `
@@ -142,38 +148,70 @@ const addCustomer = async (request, response) => {
 };
 
 const updateCustomer = async (request, response) => {
-	const {
-		id,
-		idCustomerTypeFK,
-		firstNames,
-		lastNames,
-		city,
-		country,
-		direction,
-		phoneNumber,
-		email,
-		naturalRtn,
-		businessName,
-		businessRtn,
-		hasCredit,
-		creditAmount,
-	} = request.body;
+	try {
+		const {
+			id,
+			idCustomerTypeFK,
+			firstNames,
+			lastNames,
+			city,
+			country,
+			direction,
+			phoneNumber,
+			email,
+			naturalRtn,
+			businessName,
+			businessRtn,
+			hasCredit,
+			creditAmount,
+		} = request.body;
 
-	const query = `
-		UPDATE 
+		const userQuery = `
+		SELECT 
+			*
+		FROM
 			customers
-		SET 
-			firstNames = ?, 
-			lastNames = ?, 
-			country = ?, 
-			city = ?, 
-			direction = ?, 
-			idCustomerTypeFK = ?
-			updatedAt = CURRENT_TIMESTAMP
-		WHERE 
+		WHERE
 			id = ?
 		`;
-	try {
+
+		const [userResult] = await pool.query(userQuery, [id]);
+		// response.status(200).json(userResult);
+
+		if (userResult[0].idCustomerTypeFK === parseInt(idCustomerTypeFK)) {
+			// Si se modifica los detalles del tipo de cliente
+			if (businessName === null) {
+				updateNaturalCustomerDetailsByCustomerId({
+					id,
+					naturalRtn,
+				});
+			} else {
+				updateBusinessCustomerDetailsByCustomerId({
+					id,
+					businessName,
+					businessRtn,
+					hasCredit,
+					creditAmount,
+				});
+			}
+		} else {
+			// Si se modifica el tipo de cliente
+		}
+
+		const query = `
+		UPDATE
+			customers
+		SET
+			firstNames = ?,
+			lastNames = ?,
+			country = ?,
+			city = ?,
+			direction = ?,
+			idCustomerTypeFK = ?,
+			updatedAt = CURRENT_TIMESTAMP
+		WHERE
+			id = ?
+		`;
 		const [result] = await pool.query(query, [
 			firstNames,
 			lastNames,
@@ -183,6 +221,7 @@ const updateCustomer = async (request, response) => {
 			idCustomerTypeFK,
 			id,
 		]);
+
 		response.status(200).json(result);
 	} catch (e) {
 		response.status(500).json(e);

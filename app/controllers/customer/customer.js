@@ -19,6 +19,8 @@ const getCustomers = async (request, response) => {
 			customerType
 		ON
 			customerType.id = customers.idCustomerTypeFK
+		ORDER BY
+			id ASC
 		`;
 
 	try {
@@ -33,21 +35,19 @@ const getCustomerById = async (request, response) => {
 	const query = `
 		SELECT 
 			customers.id AS id,
-			customers.firstNames AS customerFirstName,
-			customers.lastNames AS customerLastName,
-			customerType.name AS customerType,
-			customers.country AS customerCountry,
-			customers.city AS customerCity,
-			customers.createdAt AS customerAddedAt,
-			customerContactInfo.email as customerEmail,
-			customerContactInfo.phoneNumber as customerPhoneNumber,
-			customerType.name AS customerType,
-			naturalCustomerTypeDetails.rtn AS naturalCustomerRTN,
-			businessCustomerTypeDetails.businessName AS businessCustomerName,
-			businessCustomerTypeDetails.rtn AS businessCustomerRTN,
-			businessCustomerTypeDetails.hasCredit AS businessCustomerHasCredit,
-			businessCustomerTypeDetails.creditAmount AS businessCustomerCreditAmount,
-			customers.createdAt AS customerRegisteredAt
+			customers.idCustomerTypeFK AS idCustomerTypeFK,
+			customers.firstNames AS firstNames,
+			customers.lastNames AS lastNames,
+			customers.country AS country,
+			customers.city AS city,
+			customers.direction AS direction,
+			customerContactInfo.phoneNumber as phoneNumber,
+			customerContactInfo.email as email,
+			businessCustomerTypeDetails.businessName AS businessName,
+			businessCustomerTypeDetails.rtn AS businessRtn,
+			businessCustomerTypeDetails.hasCredit AS hasCredit,
+			businessCustomerTypeDetails.creditAmount AS creditAmount,
+			naturalCustomerTypeDetails.rtn AS naturalRtn
 		FROM 
 			customers
 		JOIN
@@ -143,13 +143,20 @@ const addCustomer = async (request, response) => {
 
 const updateCustomer = async (request, response) => {
 	const {
+		id,
+		idCustomerTypeFK,
 		firstNames,
 		lastNames,
-		country,
 		city,
+		country,
 		direction,
-		idCustomerTypeFK,
-		id,
+		phoneNumber,
+		email,
+		naturalRtn,
+		businessName,
+		businessRtn,
+		hasCredit,
+		creditAmount,
 	} = request.body;
 
 	const query = `
@@ -222,12 +229,10 @@ const getCustomerStatistics = async (request, response) => {
 	}
 };
 
-
-
 export {
 	getCustomers,
 	getCustomerById,
 	addCustomer,
 	updateCustomer,
-	getCustomerStatistics
+	getCustomerStatistics,
 };

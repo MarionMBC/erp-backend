@@ -38,7 +38,7 @@ const router = express.Router();
 
 // =====================================CUSTOMERS===========================================
 router.get("/getCustomers", getCustomers);
-router.get("/getCustomerById", getCustomerById);
+router.post("/getCustomerById", getCustomerById);
 router.post("/addCustomer", addCustomer);
 router.put("/updateCustomer", updateCustomer);
 router.get("/getCustomerStatistics", getCustomerStatistics);

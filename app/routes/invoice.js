@@ -4,14 +4,14 @@ import {
 	getInvoiceById,
 	addInvoice,
 	updateInvoice,
-} from "../controllers/invoices/invoices.js";
+} from "../controllers/invoice/invoice.js";
 
 
 const router = express.Router();
 
 router.get('/getInvoices', getInvoices);
-router.get('/getInvoicesById', getInvoiceById);
+router.get('/getInvoicesById/:id', getInvoiceById);
 router.post('/addInvoice', addInvoice);
-router.patch('/updateInvoice', updateInvoice);
+router.patch('/updateInvoice/:id', updateInvoice);
 
 export { router };

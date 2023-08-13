@@ -10,8 +10,8 @@ import {
 const router = express.Router();
 
 router.get('/getOutstandingPayment', getOutstandingPayment);
-router.get('/getOutstandingPaymentById', getOutstandingPaymentById);
+router.get('/getOutstandingPaymentById/:id', getOutstandingPaymentById);
 router.post('/addOutstandingPayment', addOutstandingPayment);
-router.patch('/updateOutstandingPayments', updateOutstandingPayments);
+router.patch('/updateOutstandingPayments/:id', updateOutstandingPayments);
 
 export { router };

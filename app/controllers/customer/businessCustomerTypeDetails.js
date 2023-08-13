@@ -1,28 +1,64 @@
 import pool from "../../config/database.js";
 
-const addBusinessCustomerDetails = async (request, response) => {
-	const { idCustomerTypeFK, businessName, rtn, hasCredit, creditAmount } =
-		request.body;
-
+const getBusinessCustomers = async (request, response) => {
 	const query = `
-        INSERT INTO 
-            businessCustomerTypeDetails (idCustomerTypeFK, businessName, rtn, hasCredit, creditAmount)
-        VALUES
-            (?, ?, ?, ?, ?);
-        `;
+		SELECT 
+			customers.id AS id,
+			customers.firstNames AS firstNames,
+			customers.lastNames AS lastNames,
+			customers.country AS country,
+			customers.city AS city,
+			bctd.businessName AS businessName,
+			IF(bctd.hasCredit = 0, 'No', 'Sí') AS hasCredit,
+			FORMAT(bctd.creditAmount, 0) AS creditAmount
+		FROM 
+			customers
+		JOIN 
+			businessCustomerTypeDetails AS bctd
+		ON
+			bctd.idCustomerFK = customers.id
+		ORDER BY
+			id ASC
+		`;
 
 	try {
-		const [result] = await pool.query(query, [
-			idCustomerTypeFK,
+		const [result] = await pool.query(query);
+		response.status(200).json(result);
+	} catch (error) {
+		response.status(500).json(error);
+	}
+};
+
+const addBusinessCustomerDetails = async (
+	businessCustomerDetailsProperties
+) => {
+	try {
+		const {
+			idCustomerFK,
 			businessName,
-			rtn,
+			businessRtn,
+			hasCredit,
+			creditAmount,
+		} = businessCustomerDetailsProperties;
+
+		const query = `
+			INSERT INTO 
+				businessCustomerTypeDetails (idCustomerFK, businessName, rtn, hasCredit, creditAmount)
+			VALUES
+				(?, ?, ?, ?, ?);
+        `;
+
+		const [result] = await pool.query(query, [
+			idCustomerFK,
+			businessName,
+			businessRtn,
 			hasCredit,
 			creditAmount,
 		]);
 
-		response.status(200).json(result);
+		return result;
 	} catch (error) {
-		response.status(500).json(error);
+		return error;
 	}
 };
 
@@ -60,11 +96,14 @@ const updateBusinessCustomerDetails = async (request, response) => {
 	}
 };
 
-const updateBusinessCustomerDetailsByCustomerId = async (request, response) => {
-	const { idCustomerTypeFK, businessName, rtn, hasCredit, creditAmount } =
-		request.body;
+const updateBusinessCustomerDetailsByCustomerId = async (
+	businessCustomerDetailsProperties
+) => {
+	try {
+		const { id, businessName, businessRtn, hasCredit, creditAmount } =
+			businessCustomerDetailsProperties;
 
-	const query = `
+		const query = `
         UPDATE 
             businessCustomerTypeDetails 
         SET 
@@ -72,28 +111,49 @@ const updateBusinessCustomerDetailsByCustomerId = async (request, response) => {
             rtn = ?, 
             hasCredit = ?, 
             creditAmount = ?,
-            updatedAt = CURRENT_TIMESTAMP
+			updatedAt = CURRENT_TIMESTAMP
         WHERE
-			idCustomerTypeFK = ?
+			idCustomerFK = ?
         `;
 
-	try {
 		const [result] = await pool.query(query, [
 			businessName,
-			rtn,
+			businessRtn,
 			hasCredit,
 			creditAmount,
-			idCustomerTypeFK,
+			id,
 		]);
 
-		response.status(200).json(result);
+		return result;
 	} catch (error) {
-		response.status(500).json(error);
+		return error;
+	}
+};
+
+const deleteBusinessCustomerDetailsByCustomerId = async (
+	businessCustomerDetailsProperties
+) => {
+	try {
+		const { id } = businessCustomerDetailsProperties;
+
+		const query = `
+        DELETE FROM
+			businessCustomerTypeDetails
+        WHERE
+			idCustomerFK = ?
+        `;
+
+		const [result] = await pool.query(query, [id]);
+		return result;
+	} catch (error) {
+		return error;
 	}
 };
 
 export {
+	getBusinessCustomers,
 	addBusinessCustomerDetails,
 	updateBusinessCustomerDetails,
 	updateBusinessCustomerDetailsByCustomerId,
+	deleteBusinessCustomerDetailsByCustomerId,
 };

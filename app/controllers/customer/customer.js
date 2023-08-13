@@ -1,23 +1,37 @@
 import pool from "../../config/database.js";
+import {
+	addCustomerContactInfo,
+	updateCustomerContactInfoByCustomerId,
+} from "./customerContactInfo.js";
+import {
+	addNaturalCustomerDetails,
+	updateNaturalCustomerDetailsByCustomerId,
+	deleteNaturalCustomerDetailsByCustomerId,
+} from "./naturalCustomerTypeDetails.js";
+import {
+	addBusinessCustomerDetails,
+	updateBusinessCustomerDetailsByCustomerId,
+	deleteBusinessCustomerDetailsByCustomerId,
+} from "./businessCustomerTypeDetails.js";
 
 const getCustomers = async (request, response) => {
 	const query = `
 		SELECT 
-			customers.id as id,
-			customers.firstNames AS customerFirstName,
-			customers.lastNames AS customerLastName,
-			customers.country AS customerCountry,
-			customers.city AS customerCity,
-			customers.createdAt AS customerAddedAt,
-			customerType.name AS customerType
+			customers.id AS id,
+			customerType.name AS customerType,
+			customers.firstNames AS firstNames,
+			customers.lastNames AS lastNames,
+			customers.country AS country,
+			customers.city AS city,
+			customers.direction AS direction
 		FROM 
 			customers
 		JOIN
 			customerType
 		ON
-			customers.id = customerType.idCustomerFK
+			customerType.id = customers.idCustomerTypeFK
 		ORDER BY
-			id 
+			id ASC
 		`;
 
 	try {
@@ -32,26 +46,25 @@ const getCustomerById = async (request, response) => {
 	const query = `
 		SELECT 
 			customers.id AS id,
-			customers.firstNames AS customerFirstName,
-			customers.lastNames AS customerLastName,
-			customers.country AS customerCountry,
-			customers.city AS customerCity,
-			customers.createdAt AS customerAddedAt,
-			customerContactInfo.email as customerEmail,
-			customerContactInfo.phoneNumber as customerPhoneNumber,
-			customerType.name AS customerType,
-			naturalCustomerTypeDetails.rtn AS naturalCustomerRTN,
-			businessCustomerTypeDetails.businessName AS businessCustomerName,
-			businessCustomerTypeDetails.rtn AS businessCustomerRTN,
-			businessCustomerTypeDetails.hasCredit AS businessCustomerHasCredit,
-			businessCustomerTypeDetails.creditAmount AS businessCustomerCreditAmount,
-			customers.createdAt AS customerRegisteredAt
+			customers.idCustomerTypeFK AS idCustomerTypeFK,
+			customers.firstNames AS firstNames,
+			customers.lastNames AS lastNames,
+			customers.country AS country,
+			customers.city AS city,
+			customers.direction AS direction,
+			customerContactInfo.phoneNumber as phoneNumber,
+			customerContactInfo.email as email,
+			businessCustomerTypeDetails.businessName AS businessName,
+			businessCustomerTypeDetails.rtn AS businessRtn,
+			businessCustomerTypeDetails.hasCredit AS hasCredit,
+			businessCustomerTypeDetails.creditAmount AS creditAmount,
+			naturalCustomerTypeDetails.rtn AS naturalRtn
 		FROM 
 			customers
 		JOIN
 			customerType
 		ON
-			customers.id = customerType.idCustomerFK
+			customers.idCustomerTypeFK = customerType.id
 		JOIN 
 			customerContactInfo
 		ON
@@ -59,11 +72,11 @@ const getCustomerById = async (request, response) => {
 		LEFT JOIN
 			naturalCustomerTypeDetails	
 		ON
-			customerType.id = naturalCustomerTypeDetails.idCustomerTypeFK
+			customers.id = naturalCustomerTypeDetails.idCustomerFK
 		LEFT JOIN
 			businessCustomerTypeDetails	
 		ON
-			customerType.id = businessCustomerTypeDetails.idCustomerTypeFK
+			customers.id = businessCustomerTypeDetails.idCustomerFK
 		wHERE
 			customers.id = ?
 	`;
@@ -77,23 +90,61 @@ const getCustomerById = async (request, response) => {
 };
 
 const addCustomer = async (request, response) => {
-	const { firstNames, lastNames, country, city, direction } = request.body;
+	try {
+		const {
+			idCustomerTypeFK,
+			firstNames,
+			lastNames,
+			city,
+			country,
+			direction,
+			phoneNumber,
+			email,
+			naturalRtn,
+			businessName,
+			businessRtn,
+			hasCredit,
+			creditAmount,
+		} = request.body;
 
-	const query = `
-		INSERT INTO 
-			customers (firstNames, lastNames, country, city, direction)
-		VALUES 
-			(?, ?, ?, ?, ?)
+		const query = `
+			INSERT INTO
+				customers (firstNames, lastNames, country, city, direction, idCustomerTypeFK)
+			VALUES
+				(?, ?, ?, ?, ?, ?)
 		`;
 
-	try {
 		const [result] = await pool.query(query, [
 			firstNames,
 			lastNames,
 			country,
 			city,
 			direction,
+			idCustomerTypeFK,
 		]);
+
+		const idCustomerFK = result.insertId;
+
+		addCustomerContactInfo({
+			idCustomerFK,
+			phoneNumber,
+			email,
+		});
+
+		if (businessName === null) {
+			addNaturalCustomerDetails({
+				idCustomerFK,
+				naturalRtn,
+			});
+		} else {
+			addBusinessCustomerDetails({
+				idCustomerFK,
+				businessName,
+				businessRtn,
+				hasCredit,
+				creditAmount,
+			});
+		}
 
 		response.status(200).json(result);
 	} catch (e) {
@@ -102,31 +153,104 @@ const addCustomer = async (request, response) => {
 };
 
 const updateCustomer = async (request, response) => {
-	const { firstNames, lastNames, country, city, direction, id } =
-		request.body;
+	try {
+		const {
+			id,
+			idCustomerTypeFK,
+			firstNames,
+			lastNames,
+			city,
+			country,
+			direction,
+			phoneNumber,
+			email,
+			naturalRtn,
+			businessName,
+			businessRtn,
+			hasCredit,
+			creditAmount,
+		} = request.body;
 
-	const query = `
-		UPDATE 
+		const userQuery = `
+		SELECT 
+			*
+		FROM
 			customers
-		SET 
-			firstNames = ?, 
-			lastNames = ?, 
-			country = ?, 
-			city = ?, 
-			direction = ?, 
-			updatedAt = CURRENT_TIMESTAMP
-		WHERE 
+		WHERE
 			id = ?
 		`;
-	try {
+
+		const [userResult] = await pool.query(userQuery, [id]);
+		const idCustomerFK = id;
+
+		if (userResult[0].idCustomerTypeFK === parseInt(idCustomerTypeFK)) {
+			// Si se modifica los detalles del tipo de cliente
+			if (businessName === null) {
+				updateNaturalCustomerDetailsByCustomerId({
+					id,
+					naturalRtn,
+				});
+			} else {
+				updateBusinessCustomerDetailsByCustomerId({
+					id,
+					businessName,
+					businessRtn,
+					hasCredit,
+					creditAmount,
+				});
+			}
+		} else {
+			// Si se modifica el tipo de cliente
+			if (parseInt(idCustomerTypeFK) === 1) {
+				// Se cmabia el tipo de cliente de business a natural
+				addNaturalCustomerDetails({
+					idCustomerFK,
+					naturalRtn,
+				});
+
+				// Borrando el tipo de cliente business
+				deleteBusinessCustomerDetailsByCustomerId({ id });
+			} else {
+				// Se cmabia el tipo de cliente de business a natural
+				addBusinessCustomerDetails({
+					idCustomerFK,
+					businessName,
+					businessRtn,
+					hasCredit,
+					creditAmount,
+				});
+
+				// Borrando el tipo de cliente natural
+				deleteNaturalCustomerDetailsByCustomerId({ id });
+			}
+		}
+
+		updateCustomerContactInfoByCustomerId({ id, phoneNumber, email });
+
+		const query = `
+		UPDATE
+			customers
+		SET
+			firstNames = ?,
+			lastNames = ?,
+			country = ?,
+			city = ?,
+			direction = ?,
+			idCustomerTypeFK = ?,
+			updatedAt = CURRENT_TIMESTAMP
+		WHERE
+			id = ?
+		`;
 		const [result] = await pool.query(query, [
 			firstNames,
 			lastNames,
 			country,
 			city,
 			direction,
+			idCustomerTypeFK,
 			id,
 		]);
+
 		response.status(200).json(result);
 	} catch (e) {
 		response.status(500).json(e);

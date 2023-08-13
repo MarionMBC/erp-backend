@@ -70,9 +70,9 @@ const updateInterest = async () => {
     `UPDATE 
         invoiceInterest
     SET 
-        (id, 
-        idOutstandingInvoiceFK,
-        moneyAmount
+        (id = ?, 
+        idOutstandingInvoiceFK = ?,
+        moneyAmount = ?
         updatedAt = CURRENT_TIMESTAMP)
     WHERE 
         id = ?`;

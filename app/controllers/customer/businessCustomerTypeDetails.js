@@ -17,6 +17,8 @@ const getBusinessCustomers = async (request, response) => {
 			businessCustomerTypeDetails AS bctd
 		ON
 			bctd.idCustomerFK = customers.id
+		ORDER BY
+			id ASC
 		`;
 
 	try {
@@ -97,9 +99,6 @@ const updateBusinessCustomerDetails = async (request, response) => {
 const updateBusinessCustomerDetailsByCustomerId = async (
 	businessCustomerDetailsProperties
 ) => {
-
-	console.log(businessCustomerDetailsProperties);
-
 	try {
 		const { id, businessName, businessRtn, hasCredit, creditAmount } =
 			businessCustomerDetailsProperties;
@@ -124,6 +123,27 @@ const updateBusinessCustomerDetailsByCustomerId = async (
 			creditAmount,
 			id,
 		]);
+
+		return result;
+	} catch (error) {
+		return error;
+	}
+};
+
+const deleteBusinessCustomerDetailsByCustomerId = async (
+	businessCustomerDetailsProperties
+) => {
+	try {
+		const { id } = businessCustomerDetailsProperties;
+
+		const query = `
+        DELETE FROM
+			businessCustomerTypeDetails
+        WHERE
+			idCustomerFK = ?
+        `;
+
+		const [result] = await pool.query(query, [id]);
 		return result;
 	} catch (error) {
 		return error;
@@ -135,4 +155,5 @@ export {
 	addBusinessCustomerDetails,
 	updateBusinessCustomerDetails,
 	updateBusinessCustomerDetailsByCustomerId,
+	deleteBusinessCustomerDetailsByCustomerId,
 };

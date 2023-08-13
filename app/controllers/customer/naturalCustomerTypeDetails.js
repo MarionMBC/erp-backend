@@ -15,6 +15,8 @@ const getNaturalCustomers = async (request, response) => {
 			naturalCustomerTypeDetails AS nctd
 		ON
 			nctd.idCustomerFK = customers.id
+		ORDER BY
+			id ASC
 		`;
 
 	try {
@@ -85,6 +87,28 @@ const updateNaturalCustomerDetailsByCustomerId = async (
     `;
 
 		const [result] = await pool.query(query, [naturalRtn, id]);
+
+		return result;
+	} catch (error) {
+		return error;
+	}
+};
+
+const deleteNaturalCustomerDetailsByCustomerId = async (
+	naturalCustomerDetailsProperties
+) => {
+	try {
+		const { id } = naturalCustomerDetailsProperties;
+
+		const query = `
+        DELETE FROM
+			naturalCustomerTypeDetails
+        WHERE
+			idCustomerFK = ?
+        `;
+
+		const [result] = await pool.query(query, [id]);
+
 		return result;
 	} catch (error) {
 		return error;
@@ -96,4 +120,5 @@ export {
 	addNaturalCustomerDetails,
 	updateNaturalCustomerDetails,
 	updateNaturalCustomerDetailsByCustomerId,
+	deleteNaturalCustomerDetailsByCustomerId,
 };

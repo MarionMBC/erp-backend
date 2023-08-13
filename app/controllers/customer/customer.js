@@ -1,12 +1,17 @@
 import pool from "../../config/database.js";
-import { addCustomerContactInfo } from "./customerContactInfo.js";
+import {
+	addCustomerContactInfo,
+	updateCustomerContactInfoByCustomerId,
+} from "./customerContactInfo.js";
 import {
 	addNaturalCustomerDetails,
 	updateNaturalCustomerDetailsByCustomerId,
+	deleteNaturalCustomerDetailsByCustomerId,
 } from "./naturalCustomerTypeDetails.js";
 import {
 	addBusinessCustomerDetails,
 	updateBusinessCustomerDetailsByCustomerId,
+	deleteBusinessCustomerDetailsByCustomerId,
 } from "./businessCustomerTypeDetails.js";
 
 const getCustomers = async (request, response) => {
@@ -176,7 +181,7 @@ const updateCustomer = async (request, response) => {
 		`;
 
 		const [userResult] = await pool.query(userQuery, [id]);
-		// response.status(200).json(userResult);
+		const idCustomerFK = id;
 
 		if (userResult[0].idCustomerTypeFK === parseInt(idCustomerTypeFK)) {
 			// Si se modifica los detalles del tipo de cliente
@@ -196,7 +201,31 @@ const updateCustomer = async (request, response) => {
 			}
 		} else {
 			// Si se modifica el tipo de cliente
+			if (parseInt(idCustomerTypeFK) === 1) {
+				// Se cmabia el tipo de cliente de business a natural
+				addNaturalCustomerDetails({
+					idCustomerFK,
+					naturalRtn,
+				});
+
+				// Borrando el tipo de cliente business
+				deleteBusinessCustomerDetailsByCustomerId({ id });
+			} else {
+				// Se cmabia el tipo de cliente de business a natural
+				addBusinessCustomerDetails({
+					idCustomerFK,
+					businessName,
+					businessRtn,
+					hasCredit,
+					creditAmount,
+				});
+
+				// Borrando el tipo de cliente natural
+				deleteNaturalCustomerDetailsByCustomerId({ id });
+			}
 		}
+
+		updateCustomerContactInfoByCustomerId({ id, phoneNumber, email });
 
 		const query = `
 		UPDATE

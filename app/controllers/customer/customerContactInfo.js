@@ -48,28 +48,29 @@ const updateCustomerContactInfo = async (request, response) => {
 	}
 };
 
-const updateCustomerContactInfoByCustomerId = async (request, response) => {
-	const { idCustomerFK, phoneNumber, email } = request.body;
+const updateCustomerContactInfoByCustomerId = async (customerContactInfo) => {
+	try {
+		const { idCustomerFK, phoneNumber, email } = customerContactInfo;
 
-	const query = `
+		const query = `
         UPDATE
             customerContactInfo 
         SET
             phoneNumber = ?, 
-            email = ?
+            email = ?,
+			updatedAt = CURRENT_TIMESTAMP
         WHERE
             idCustomerFK = ?
-    `;
+    	`;
 
-	try {
 		const [result] = await pool.query(query, [
 			phoneNumber,
 			email,
 			idCustomerFK,
 		]);
-		response.status(200).json(result);
+		return result;
 	} catch (err) {
-		response.status(500).json(err);
+		return err;
 	}
 };
 

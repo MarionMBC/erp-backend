@@ -1,5 +1,5 @@
-import pool from "../../config/database";
-import { error500 } from "../../utils/statusList";
+import pool from "../../config/database.js";
+import { error500 } from "../../utils/statusList.js";
 
 //productBatch
 
@@ -26,7 +26,7 @@ export const getProductBatch = async (req, res) => {
 export const updateProductBatch = async (req, res) => {
     try {
         const id = req.params.id;
-        const {batchCode, idProductProviderFK, batchOrderDetail, productQuantity, totalPrice, status} = req.body;
+        const { batchCode, idProductProviderFK, batchOrderDetail, productQuantity, totalPrice, status } = req.body;
         console.log(status)
         const [productBatch] = await pool.query('UPDATE productBatches set batchCode = IFNULL(?, batchCode), idProductProviderFK = IFNULL(?, idProductProviderFK), batchOrderDetail = IFNULL(?, batchOrderDetail), productQuantity = IFNULL(?, productQuantity), totalPrice = IFNULL(?, totalPrice), status = IFNULL(?, status) where id = ?', [batchCode, idProductProviderFK, batchOrderDetail, productQuantity, totalPrice, status, id])
         const [productBatchUpdated] = await pool.query('SELECT * FROM productBatches where id=?', [id]);
@@ -37,7 +37,7 @@ export const updateProductBatch = async (req, res) => {
             }) : res.status(404).json({
                 msg: 'No se ha encontrado el lote de producto.'
             })
-            
+
     } catch (error) {
         return error500(500, res, 'Algo ha salido mal', error);
 
@@ -64,7 +64,7 @@ export const deleteProductBatch = async (req, res) => {
 
 export const createProductBatch = async (req, res) => {
     try {
-        const {batchCode, idProductProviderFK, batchOrderDetail, productQuantity, totalPrice, status} = req.body;
+        const { batchCode, idProductProviderFK, batchOrderDetail, productQuantity, totalPrice, status } = req.body;
         const [productBatch] = await pool.query('INSERT INTO productBatches (batchCode, idProductProviderFK, batchOrderDetail, productQuantity, totalPrice, status) VALUES (?,?,?,?,?,?)', [batchCode, idProductProviderFK, batchOrderDetail, productQuantity, totalPrice, status]);
         const [productBatchCreated] = await pool.query('SELECT * FROM productBatches WHERE id=?', [productBatch.insertId]);
         return productBatch.affectedRows > 0 && productBatchCreated.length > 0 ?
@@ -84,12 +84,12 @@ export const getProductBatchByProductProvider = async (req, res) => {
         const id = req.params.id;
         const [productBatch] = await pool.query('SELECT * FROM productBatches WHERE idProductProviderFK=?', [id]);
         return productBatch.length > 0 ? res.status(200).json(productBatch) : res.status(404).json({ msg: 'No se ha encontrado el lote de producto.' })
-        
+
     } catch (error) {
         return error500(500, res, 'Algo ha salido mal', error);
 
     }
-}   
+}
 
 
 export const getProductBatchByProductProviderAndStatus = async (req, res) => {
@@ -98,7 +98,7 @@ export const getProductBatchByProductProviderAndStatus = async (req, res) => {
         const status = req.params.status;
         const [productBatch] = await pool.query('SELECT * FROM productBatches WHERE idProductProviderFK=? AND status=?', [id, status]);
         return productBatch.length > 0 ? res.status(200).json(productBatch) : res.status(404).json({ msg: 'No se ha encontrado el lote de producto.' })
-        
+
     } catch (error) {
         return error500(500, res, 'Algo ha salido mal', error);
 
@@ -110,7 +110,7 @@ export const getProductBatchByStatus = async (req, res) => {
         const status = req.params.status;
         const [productBatch] = await pool.query('SELECT * FROM productBatches WHERE status=?', [status]);
         return productBatch.length > 0 ? res.status(200).json(productBatch) : res.status(404).json({ msg: 'No se ha encontrado el lote de producto.' })
-        
+
     } catch (error) {
         return error500(500, res, 'Algo ha salido mal', error);
 
@@ -125,7 +125,7 @@ export const getProductBatchByProductProviderAndStatusAndBatchCode = async (req,
         const batchCode = req.params.batchCode;
         const [productBatch] = await pool.query('SELECT * FROM productBatches WHERE idProductProviderFK=? AND status=? AND batchCode=?', [id, status, batchCode]);
         return productBatch.length > 0 ? res.status(200).json(productBatch) : res.status(404).json({ msg: 'No se ha encontrado el lote de producto.' })
-        
+
     } catch (error) {
         return error500(500, res, 'Algo ha salido mal', error);
 
@@ -138,7 +138,7 @@ export const getProductBatchByStatusAndBatchCode = async (req, res) => {
         const batchCode = req.params.batchCode;
         const [productBatch] = await pool.query('SELECT * FROM productBatches WHERE status=? AND batchCode=?', [status, batchCode]);
         return productBatch.length > 0 ? res.status(200).json(productBatch) : res.status(404).json({ msg: 'No se ha encontrado el lote de producto.' })
-        
+
     } catch (error) {
         return error500(500, res, 'Algo ha salido mal', error);
 
@@ -152,7 +152,7 @@ export const getProductBatchByBatchCode = async (req, res) => {
         const batchCode = req.params.batchCode;
         const [productBatch] = await pool.query('SELECT * FROM productBatches WHERE batchCode=?', [batchCode]);
         return productBatch.length > 0 ? res.status(200).json(productBatch) : res.status(404).json({ msg: 'No se ha encontrado el lote de producto.' })
-        
+
     } catch (error) {
         return error500(500, res, 'Algo ha salido mal', error);
 

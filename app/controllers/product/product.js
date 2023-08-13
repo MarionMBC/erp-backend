@@ -1,3 +1,4 @@
+import { uid } from "uid";
 import pool from "../../config/database.js";
 import { err400, err500, succes200 } from "../../utils/statusList.js";
 
@@ -13,7 +14,7 @@ const getProducts = async (req, res) => {
                 error: e
             }
         )
-    }
+    } 
 }
 
 const getProduct = async (req, res) => {
@@ -27,42 +28,42 @@ const getProduct = async (req, res) => {
     }
 }
 
-const addProduct = async (req, res) => {
+/* const addProduct = async (req, res) => {
     try {
         const {
-            productCode,
             name,
             description,
             idProductCategoryFK,
             idProductUnityFK,
             taxablePrice,
-            taxEmptyPrice,
+            taxExemptPrice,
             salePrice,
             images,
             status,
             elaborationDate,
             expirationDate,
-            createdAt,
-            updatedAt
         } = req.body;
-        await pool.query(
-            'INSERT INTO PRODUCTS VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        const productAdded = await pool.query(
+            'INSERT INTO products ( name, description, idProductCategoryFK, idProductUnityFK, taxablePrice, taxExemptPrice, salePrice, status, elaborationDate, expirationDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
-                productCode,
                 name,
                 description,
                 idProductCategoryFK,
                 idProductUnityFK,
                 taxablePrice,
-                taxEmptyPrice,
+                taxExemptPrice,
                 salePrice,
-                images,
                 status,
                 elaborationDate,
-                expirationDate,
-                createdAt,
-                updatedAt
+                expirationDate
             ])
+
+        const productCode = productAdded.insertId;
+
+        images.forEach(async (image) => {
+            await pool.query('INSERT INTO productImage (productCode, imageUrl) VALUES (?, ?)', [productCode, image]);
+        });
+
         return succes200(res, 'Producto agregado correctamente');
     } catch (e) {
         console.log(e);
@@ -71,6 +72,70 @@ const addProduct = async (req, res) => {
                 error: 'Error al insertar el producto'
             }
         )
+    }
+} */
+
+
+const addProduct = async (req, res) => {
+    try {
+        const {
+            name,
+            description,
+            idProductCategoryFK,
+            idProductUnityFK,
+            taxablePrice,
+            taxExemptPrice,
+            salePrice,
+            images,
+            status,
+            elaborationDate,
+            expirationDate,
+        } = req.body;
+
+        const productCode = `prod-${uid(5)}`;
+
+        const [
+            productAdded
+        ] = await pool.query(
+            'INSERT INTO products (name, productCode, description, idProductCategoryFK, idProductUnityFK, taxablePrice, taxExemptPrice, salePrice, status, elaborationDate, expirationDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [
+                name,
+                productCode,
+                description,
+                idProductCategoryFK,
+                idProductUnityFK,
+                taxablePrice,
+                taxExemptPrice,
+                salePrice,
+                status,
+                elaborationDate,
+                expirationDate
+            ]);
+
+        images.forEach(async (image) => {
+            const [imageUploaded] = await pool.query('INSERT INTO productImage (imageUrl) VALUES (?)', [image]);
+            await pool.query('INSERT INTO product_image (productId, imageId) VALUES (?, ?)', [productAdded.insertId, imageUploaded.insertId]);
+        });
+
+        return succes200(res, 'Producto agregado correctamente');
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({
+            error: 'Error al insertar el producto'
+        });
+    }
+}
+
+const addImages = async (
+    idImage,
+    idProduct
+) => {
+    try {
+        await pool.query('INSERT INTO product_image (productId, imageId) VALUES (?, ?)', [idProduct, idImage]);
+
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -178,6 +243,7 @@ const getProductByName = async (req, res) => {
         return res.status(500).json({ msg: 'Algo ha salido mal al obtener los productos' });
     }
 }
+
 
 const getProductByCategoryName = async (req, res) => {
     try {

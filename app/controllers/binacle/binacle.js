@@ -8,7 +8,8 @@ const getBinacle = async (request, response) => {
             userRole,
             actionOn,
             actionDate,
-            actionType
+            actionType,
+			description
 		FROM 
 			binacle
 		`;

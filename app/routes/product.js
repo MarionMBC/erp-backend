@@ -1,6 +1,7 @@
 import express from 'express';
 import { addProduct, deleteProduct, getProduct, getProductByCategoryId, getProducts, updateProduct } from '../controllers/product/product.js';
 import {
+    createProductCategory,
     getProductCategories,
     getProductCategory,
     updateProductCategory
@@ -23,7 +24,7 @@ router.get('/getProductByCategory/:id', getProductByCategoryId);
 
 router.get('/getCategory', getProductCategories);
 router.get('/getCategory/:id', getProductCategory);
-router.post('/addCategory', () => { return null });
+router.post('/addCategory',  createProductCategory);
 router.delete('/deleteCategory', () => { return null });
 
 router.get('/getProductProviders', getProductProviders);

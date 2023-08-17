@@ -77,7 +77,6 @@ const addProduct = async (req, res) => {
 				[productAdded.insertId, imageUploaded.insertId]
 			);
 		});
-
 		return res
 			.status(200)
 			.json({ msg: "Producto agregado correctamente", ...productAdded });
@@ -102,16 +101,16 @@ const addImages = async (idImage, idProduct) => {
 };
 
 const updateProduct = async (req, res) => {
+
 	try {
-		const id = req.params.id;
+		const id = parseInt(req.params.id);
 		const {
-			productCode,
 			name,
 			description,
 			idProductCategoryFK,
 			idProductUnityFK,
+			taxExemptPrice,
 			taxablePrice,
-			taxEmptyPrice,
 			salePrice,
 			images,
 			status,
@@ -119,34 +118,35 @@ const updateProduct = async (req, res) => {
 			expirationDate,
 		} = req.body;
 		const [product] = await pool.query(
-			"UPDATE PRODUCT set productCode\n" +
-				"name= IFNULL(?, name)\n" +
-				"description = IFNULL(?, description)\n" +
-				"idProductCategoryFK = IFNULL(?, idProductCategoryFK)\n" +
-				"idProductUnityFK = IFNULL(?, idProductUnityFK)\n" +
-				"taxablePrice = IFNULL(?, taxablePrice)\n" +
-				"taxExemptPrice = IFNULL?, taxExemptPrice)\n" +
-				"salePrice = IFNULL(?, salePrice)\n" +
-				"images = IFNULL(?, images)\n" +
-				"status = IFNULL(?, status)\n" +
-				"elaborationDate = IFNULL(?, elaborationDate)\n" +
-				"expirationDate = IFNULL(?, expirationDate)\n where id = ?",
+			"UPDATE products SET name = IFNULL(?, name), description = IFNULL(?, description), idProductCategoryFK = IFNULL(?, idProductCategoryFK), idProductUnityFK = IFNULL(?, idProductUnityFK), taxablePrice = IFNULL(?, taxablePrice), taxExemptPrice = IFNULL(?, taxExemptPrice), salePrice = IFNULL(?, salePrice), status = IFNULL(?, status), elaborationDate = IFNULL(?, elaborationDate), expirationDate = IFNULL(?, expirationDate) WHERE id = ?",
 			[
-				productCode,
 				name,
 				description,
 				idProductCategoryFK,
 				idProductUnityFK,
 				taxablePrice,
-				taxEmptyPrice,
+				taxExemptPrice,
 				salePrice,
-				images,
 				status,
 				elaborationDate,
 				expirationDate,
 				id,
 			]
 		);
+
+		const [imagesIds] = await pool.query("SELECT id FROM product_image WHERE productId = ?", [id]);
+
+		images.forEach(async (image) => {
+			const [imageUploaded] = await pool.query(
+				"Update set productImage =  IFNULL (?, imageUrl) where id = ?",
+				[image]
+			);
+			await pool.query(
+				"update set product_image (productId, imageId) VALUES (?, ?)",
+				[productAdded.insertId, imageUploaded.insertId]
+			);
+		});
+
 		const [updatedProduct] = await pool.query(
 			"SELECT * FROM products WHERE ID=?",
 			[id]
@@ -160,6 +160,7 @@ const updateProduct = async (req, res) => {
 					msg: "No se ha encontrado el producto",
 			  });
 	} catch (e) {
+		console.log(e)
 		res.status(500).json({
 			error: "No se ha podido modificar el producto.",
 		});

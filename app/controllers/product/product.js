@@ -127,15 +127,15 @@ const updateProduct = async(req, res) => {
             ]
         );
 
-        // const [imagesIds] = await pool.query("SELECT productId FROM product_image WHERE productId = ?", [id]);
+ /*       const [imagesIds] = await pool.query("SELECT productId FROM product_image WHERE productId = ?", [id]);
 
-        // images.forEach(async(image, index) => {
-        //     const [imageUploaded] = await pool.query(
-        //         "Update productImage set imageUrl =  IFNULL (?, imageUrl) where id = ?", [image, imagesIds[index]]);
-        //     await pool.query(
-        //         "update product_image  = IFNULL (?, ?)", [productAdded.insertId, imageUploaded.insertId]
-        //     );
-        // });
+        images.forEach(async(image, index) => {
+            const [imageUploaded] = await pool.query(
+                "Update productImage set imageUrl =  IFNULL (?, imageUrl) where id = ?", [image, imagesIds[index]]);
+            await pool.query(
+                "update product_image  = IFNULL (?, ?)", [productAdded.insertId, imageUploaded.insertId]
+            );
+        });*/
 
         const [updatedProduct] = await pool.query(
             "SELECT * FROM products WHERE ID=?", [id]

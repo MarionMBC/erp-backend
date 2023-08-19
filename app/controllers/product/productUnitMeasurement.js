@@ -27,14 +27,15 @@ export const getProductUnitMeasurement = async (req, res) => {
 
 export const updateProductUnitMeasurement = async (req, res) => {
     try {
+        console.log(req.body)
         const id = req.params.id;
         const {name, symbol } = req.body;
         const [productUnitMeasurement] = await pool.query('UPDATE productUnitsMeasurement set name = IFNULL(?, name), symbol = IFNULL(?, symbol) where id = ?', [name, symbol, id])
         const [productUnitMeasurementUpdated] = await pool.query('SELECT * FROM productUnitsMeasurement where id=?', [id]);
         return productUnitMeasurement.affectedRows > 0 && productUnitMeasurementUpdated.length > 0 ?
             res.status(200).json({
-                mgs: 'Se ha modificado la unidad de medida correctamente.',
-                productUnitMeasurementUpdated
+                msg: 'Se ha modificado la unidad de medida correctamente.',
+                ...productUnitMeasurement
             }) : res.status(404).json({
                 msg: 'No se ha encontrado la unidad de medida.'
             })
@@ -79,7 +80,8 @@ export const createProductUnitMeasurement = async (req, res) => {
         return productUnitMeasurement.affectedRows > 0 && productUnitMeasurementCreated.length > 0 ?
             res.status(200).json({
                 msg: 'Se ha creado la unidad de medida correctamente.',
-                productUnitMeasurementCreated
+                ...productUnitMeasurement,
+                insertId: maxID[0].id + 1
             }) : res.status(404).json({
                 msg: 'No se ha encontrado la unidad de medida.'
             })

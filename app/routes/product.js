@@ -25,7 +25,7 @@ import {
 import {
 	createProductUnitMeasurement,
 	getProductUnitMeasurement,
-	getProductUnitMeasurements,
+	getProductUnitMeasurements, updateProductUnitMeasurement,
 } from "../controllers/product/productUnitMeasurement.js";
 import { createProductCategory } from "../controllers/product/productCategory.js";
 
@@ -66,5 +66,5 @@ router.patch("/updateCategory/:id", updateProductCategory);
 
 router.get("/getProductUnities", getProductUnitMeasurements);
 router.post("/addProductUnity", createProductUnitMeasurement);
-
+router.patch("/updateProductUnity/:id", updateProductUnitMeasurement);
 export { router };

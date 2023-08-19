@@ -50,7 +50,7 @@ export const updateProductCategory = async (req, res) => {
 			productCategoryUpdated.length > 0
 			? res.status(200).json({
 					msg: "Se ha modificado la categoría de producto correctamente.",
-					...productCategoryUpdated,
+					...productCategory,
 			  })
 			: res.status(404).json({
 					msg: "No se ha encontrado la categoría de producto.",

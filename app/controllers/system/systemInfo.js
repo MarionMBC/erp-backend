@@ -32,6 +32,7 @@ export const getLicenseStatus = async (request, response) => {
 	try {
 		const query = `
 		SELECT
+			id,
             licenseStartDate,
             licenseDueDate,
             DATEDIFF(licenseDueDate, CURDATE()) AS remainingDays,

@@ -34,20 +34,13 @@ export const updateProductCategory = async (req, res) => {
 	try {
 		const id = req.params.id;
 		const { name, status } = req.body;
-		console.log(name);
 
 		const [productCategory] = await pool.query(
 			"UPDATE productCategories set name = IFNULL(?, name), status = IFNULL(?, status) where id = ?",
 			[name, status, id]
 		);
 
-		const [productCategoryUpdated] = await pool.query(
-			"SELECT * FROM productCategories where id=?",
-			[id]
-		);
-
-		return productCategory.affectedRows > 0 &&
-			productCategoryUpdated.length > 0
+		return productCategory.affectedRows > 0
 			? res.status(200).json({
 					msg: "Se ha modificado la categoría de producto correctamente.",
 					...productCategory,

@@ -72,18 +72,21 @@ export const deleteProductUnitMeasurement = async (req, res) => {
 export const createProductUnitMeasurement = async (req, res) => {
     try {
         const {name, symbol} = req.body;
-        const [productUnitMeasurement] = await pool.query('INSERT INTO productUnitsMeasurement (name, symbol) values (?, ?)', [name, symbol]);
-        const [productUnitMeasurementCreated] = await pool.query('SELECT * FROM productUnitsMeasurement where id=?', [productUnitMeasurement.insertId]);
+        const [maxID] = await pool.query ('SELECT MAX(id) as id FROM productUnitsMeasurement');
+
+        const [productUnitMeasurement] = await pool.query('INSERT INTO productUnitsMeasurement (id, name, symbol) values (?, ?, ?)', [maxID[0].id + 1, name, symbol]);
+        const [productUnitMeasurementCreated] = await pool.query('SELECT * FROM productUnitsMeasurement where id=?', [maxID[0].id + 1]);
         return productUnitMeasurement.affectedRows > 0 && productUnitMeasurementCreated.length > 0 ?
             res.status(200).json({
-                mgs: 'Se ha creado la unidad de medida correctamente.',
+                msg: 'Se ha creado la unidad de medida correctamente.',
                 productUnitMeasurementCreated
             }) : res.status(404).json({
                 msg: 'No se ha encontrado la unidad de medida.'
             })
     } catch (e) {
+        console.log(e)
         return res.status(500).json({
-            msg: 'Algo ha salido mal',
+            msg: e.sqlState,
             error: e
         });
     }

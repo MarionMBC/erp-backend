@@ -23,6 +23,7 @@ import {
 	getProductBatches,
 } from "../controllers/product/productBatch.js";
 import {
+	createProductUnitMeasurement,
 	getProductUnitMeasurement,
 	getProductUnitMeasurements,
 } from "../controllers/product/productUnitMeasurement.js";
@@ -64,5 +65,6 @@ router.patch("/updateCategory/:id", updateProductCategory);
 //Product unities
 
 router.get("/getProductUnities", getProductUnitMeasurements);
+router.post("/addProductUnity", createProductUnitMeasurement);
 
 export { router };

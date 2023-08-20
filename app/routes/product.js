@@ -68,3 +68,7 @@ router.get("/getProductUnities", getProductUnitMeasurements);
 router.post("/addProductUnity", createProductUnitMeasurement);
 router.patch("/updateProductUnity/:id", updateProductUnitMeasurement);
 export { router };
+
+
+//Product provides5
+router.get("/getProductProviders", getProductProviders);

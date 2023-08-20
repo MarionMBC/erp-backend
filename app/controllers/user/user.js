@@ -53,4 +53,21 @@ const getUserRolByUid = async (request, response) => {
 	}
 };
 
+export const getUsersCount = async (request, response) => {
+	const query = `
+		SELECT 
+		count(user.id) AS total
+		FROM
+			user
+		`;
+
+	try {
+		const [result] = await pool.query(query);
+
+		response.status(200).json(result);
+	} catch (e) {
+		response.status(500).json(e);
+	}
+}
+
 export { addUser, getUserRolByUid };

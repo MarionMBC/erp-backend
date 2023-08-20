@@ -63,8 +63,8 @@ export const getUsersCount = async (request, response) => {
 
 	try {
 		const [result] = await pool.query(query);
-
-		response.status(200).json(result);
+		const resultado = result[0].total;
+		response.status(200).json(resultado)
 	} catch (e) {
 		response.status(500).json(e);
 	}

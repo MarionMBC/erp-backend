@@ -4,7 +4,8 @@ dist/
 build/
 out/
 
-
+# Environment variables file
+.env
 
 # Logs files
 logs/

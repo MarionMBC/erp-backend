@@ -12,6 +12,8 @@ const getBinacle = async (request, response) => {
 			description
 		FROM 
 			binacle
+		ORDER BY
+			actionDate DESC
 		`;
 
 	try {

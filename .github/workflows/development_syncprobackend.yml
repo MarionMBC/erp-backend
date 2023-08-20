@@ -9,9 +9,6 @@ on:
       - development
   workflow_dispatch:
 
-cache:
-    npm: true
-
 jobs:
   build:
     runs-on: windows-latest

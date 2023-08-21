@@ -8,7 +8,7 @@ const addUser = async (request, response) => {
 		INSERT INTO 
 			user (uid, username, email, password, idUserRoleFK, status)
 		VALUES 
-			(?, ?, ?, ?, ? ?)
+			(?, ?, ?, ?, ?, ?)
 		`;
 
 	try {

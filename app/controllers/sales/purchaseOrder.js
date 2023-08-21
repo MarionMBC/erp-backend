@@ -32,7 +32,6 @@ export const getPurchaseOrders = async (req, res) => {
 
 		const [result] = await pool.query(query);
 
-		console.log(result);
 		return res.status(200).json(result);
 	} catch (e) {
 		res.status(400).json({

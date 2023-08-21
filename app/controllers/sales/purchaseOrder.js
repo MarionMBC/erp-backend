@@ -17,7 +17,7 @@ export const getPurchaseOrders = async (req, res) => {
         	purchaseOrder.salesTax AS salesTax,
         	purchaseOrder.subTotal AS subTotal,
         	purchaseOrder.total AS total,
-        	purchaseOrder.status AS status
+        	IF(purchaseOrder.status = 0, 'Pendiente', 'Realizada') AS status
         FROM 
             purchaseOrder
 		JOIN

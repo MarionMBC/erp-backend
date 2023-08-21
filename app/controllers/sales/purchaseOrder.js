@@ -1,6 +1,4 @@
-import { uid } from "uid";
 import pool from "../../config/database.js";
-import { err400, err500, succes200 } from "../../utils/statusList.js";
 
 // TODOS ESTOS CAMPOS SE CALCULAN EN FRONTEND
 
@@ -8,21 +6,33 @@ export const getPurchaseOrders = async (req, res) => {
 	try {
 		const query = `
         SELECT 
-			id,
-        	idCustomerFK,
-        	idSellerFK,
-        	purchaseOrderDate,
-        	taxablePrice,
-        	taxExemptPrice,
-        	salesTax,
-        	subTotal,
-        	total,
-        	status
+			purchaseOrder.id AS id,
+        	purchaseOrder.idCustomerFK AS idCustomerFK,
+			CONCAT(customers.firstNames,' ',customers.lastNames) AS fullName, 
+        	purchaseOrder.idSellerFK AS idSellerFK,
+			user.username AS username,
+        	purchaseOrder.purchaseOrderDate AS purchaseOrderDate,
+        	purchaseOrder.taxablePrice AS taxablePrice,
+        	purchaseOrder.taxExemptPrice AS taxExemptPrice,
+        	purchaseOrder.salesTax AS salesTax,
+        	purchaseOrder.subTotal AS subTotal,
+        	purchaseOrder.total AS total,
+        	purchaseOrder.status AS status
         FROM 
             purchaseOrder
+		JOIN
+			customers
+		ON
+			customers.id = purchaseOrder.idCustomerFK
+		JOIN
+			user
+		ON
+			user.id = purchaseOrder.idSellerFk
         `;
 
 		const [result] = await pool.query(query);
+
+		console.log(result);
 		return res.status(200).json(result);
 	} catch (e) {
 		res.status(400).json({

@@ -1,6 +1,6 @@
 import pool from "../../config/database.js";
 
-const addUser = async (request, response) => {
+export const addUser = async (request, response) => {
 	const { uid, username, email, password, idUserRoleFK, status } =
 		request.body;
 
@@ -17,8 +17,8 @@ const addUser = async (request, response) => {
 			username,
 			email,
 			password,
-			1,
-			1,
+			idUserRoleFK,
+			status,
 		]);
 
 		response.status(200).json(result);
@@ -27,7 +27,7 @@ const addUser = async (request, response) => {
 	}
 };
 
-const getUserRolByUid = async (request, response) => {
+export const getUserRolByUid = async (request, response) => {
 	const { uid } = request.body;
 
 	const query = `
@@ -53,6 +53,30 @@ const getUserRolByUid = async (request, response) => {
 	}
 };
 
+export const getSellers = async (request, response) => {
+	const query = `
+		SELECT 
+			user.id as id,
+			user.username as username
+		FROM
+			user
+		JOIN
+			roles
+		ON 
+			user.idUserRoleFK = roles.id
+		WHERE
+			user.status = TRUE AND roles.name = 'Vendedor'
+		`;
+
+	try {
+		const [result] = await pool.query(query);
+
+		response.status(200).json(result);
+	} catch (e) {
+		response.status(500).json(e);
+	}
+};
+
 export const getUsersCount = async (request, response) => {
 	const query = `
 		SELECT 
@@ -69,5 +93,3 @@ export const getUsersCount = async (request, response) => {
 		response.status(500).json(e);
 	}
 };
-
-export { addUser, getUserRolByUid };

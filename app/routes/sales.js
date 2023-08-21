@@ -3,6 +3,7 @@ import express from "express";
 import {
 	getPurchaseOrderProducts,
 	addProductToPurchaseOrder,
+	getPurchaseOrderProductByPurchaseOrderId,
 } from "../controllers/sales/purchaseOrderProducts.js";
 import {
 	getPurchaseOrders,
@@ -20,6 +21,10 @@ router.post("/addPurchaseOrder", addPurchaseOrder);
 // =====================================PURCHASEORDERPRODUCTS===========================================
 router.get("/getPurchaseOrderProducts", getPurchaseOrderProducts);
 router.post("/addProductToPurchaseOrder", addProductToPurchaseOrder);
+router.post(
+	"/getPurchaseOrderProductByPurchaseOrderId",
+	getPurchaseOrderProductByPurchaseOrderId
+);
 // router.post("/addCustomer", addCustomer);
 // router.put("/updateCustomer", updateCustomer);
 // router.get("/getCustomerStatistics", getCustomerStatistics);

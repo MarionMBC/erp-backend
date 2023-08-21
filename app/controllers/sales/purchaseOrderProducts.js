@@ -64,3 +64,31 @@ export const addProductToPurchaseOrder = async (req, res) => {
 		});
 	}
 };
+
+export const getPurchaseOrderProductByPurchaseOrderId = async (req, res) => {
+	try {
+		const { idPurchaseOrderFK } = req.body;
+
+		const query = `
+		SELECT
+			id,
+			idPurchaseOrderFK,
+			idProductFk,
+			pricePerUnit,
+			productQuantity,
+			totalPerProduct
+		FROM
+			purchaseOrderProducts
+		WHERE 
+			idPurchaseOrderFK = ?
+		`;
+
+		const [result] = await pool.query(query, [idPurchaseOrderFK]);
+		return res.status(200).json(result);
+	} catch (e) {
+		res.status(400).json({
+			msg: "Algo ha salido mal.",
+			error: e,
+		});
+	}
+};

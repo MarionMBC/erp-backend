@@ -17,8 +17,8 @@ const addUser = async (request, response) => {
 			username,
 			email,
 			password,
-			idUserRoleFK,
-			status,
+			1,
+			1,
 		]);
 
 		response.status(200).json(result);
@@ -64,10 +64,10 @@ export const getUsersCount = async (request, response) => {
 	try {
 		const [result] = await pool.query(query);
 		const resultado = result[0].total;
-		response.status(200).json(resultado)
+		response.status(200).json(resultado);
 	} catch (e) {
 		response.status(500).json(e);
 	}
-}
+};
 
 export { addUser, getUserRolByUid };

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -33,5 +33,11 @@
     "nodemon": "^2.0.22",
     "uid": "^2.0.2",
     "web-push": "^3.6.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.10",
+    "@babel/core": "^7.22.10",
+    "@babel/plugin-syntax-import-attributes": "^7.22.5",
+    "@babel/preset-env": "^7.22.10"
   }
 }

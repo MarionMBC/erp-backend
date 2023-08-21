@@ -6,11 +6,11 @@ dotenv.config();
 
 // Configuración de la conexión a la base de datos
 const dbConfig = {
-	host: process.env.HOST,
+	host: '169.155.57.112',
 	user: 'admin', // NO CAMBIAR
-	password: process.env.PASSWORD,
-	port: process.env.DATABASEPORT,
-	database: process.env.DATABASE,
+	password: 'PasswordMarketplace23*',
+	port: 9000,
+	database: 'syncPro',
 	connectionLimit: 10,
 	typeCast: function (field, next) {
 		if (field.type === "DATETIME") {

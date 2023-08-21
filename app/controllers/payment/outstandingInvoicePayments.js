@@ -81,12 +81,12 @@ const updateOutstandingPayments = async () => {
         outstandingInvoicePayments
     SET 
         (id,
-        idOustandingInvoiceFK, 
-        idChasierFK, 
-        paymentDate, 
-        paymentAmount,
-        installment,
-        interestAmount,
+        idOustandingInvoiceFK = ?, 
+        idChasierFK = ?, 
+        paymentDate = ?, 
+        paymentAmount = ?,
+        installment = ?,
+        interestAmount = ?,
         updatedAt = CURRENT_TIMESTAMP)
     WHERE 
         id = ?`;

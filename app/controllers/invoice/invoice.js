@@ -106,18 +106,18 @@ const updateInvoice = async () => {
     `UPDATE 
         invoices
     SET 
-        (id,
-        idCustomer, 
-        idSeller, 
-        idPurchaseOrder, 
-        invoiceCode,
-        cai,
-        rtn,
-        invoiceType,
-        saleDate,
-        dueDate,
-        creditDays,
-        invoiceNotes,
+        (id = ?, 
+        idCustomer = ?, 
+        idSeller = ?, 
+        idPurchaseOrder = ?, 
+        invoiceCode = ?,
+        cai = ?,
+        rtn = ?,
+        invoiceType = ?,
+        saleDate = ?,
+        dueDate = ?,
+        creditDays = ?,
+        invoiceNotes = ?,
         updatedAt = CURRENT_TIMESTAMP)
     WHERE 
         id = ?`;

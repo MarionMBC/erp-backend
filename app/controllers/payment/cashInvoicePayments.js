@@ -74,11 +74,11 @@ const updateCashPayment = async () => {
     `UPDATE 
         cashInvoicePayments
     SET 
-        (id,
-        idChasierFK, 
-        idInvoiceFK, 
-        paymentDate, 
-        paymentAmount,
+        (id = ?,
+        idChasierFK = ?, 
+        idInvoiceFK = ?, 
+        paymentDate = ?, 
+        paymentAmount = ?,
         updatedAt = CURRENT_TIMESTAMP)
     WHERE 
         id = ?`;

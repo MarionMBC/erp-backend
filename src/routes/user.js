@@ -7,6 +7,7 @@ import {
 	getAllUsers,
 	getAllRoles,
 	updateRole,
+	updateRoleAndStatus,
 } from "../controllers/user/user.js";
 
 const router = express.Router();
@@ -18,7 +19,8 @@ router.get("/getUsersCount", getUsersCount);
 router.get("/getSellers", getSellers);
 router.get("/getUsers", getAllUsers);
 router.get("/getRoles", getAllRoles);
-router.patch("/updateUserRole", updateRole);
+router.patch("/updateRole", updateRole);
+router.patch("/updateUser", updateRoleAndStatus);
 
 
 export { router };

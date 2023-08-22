@@ -131,12 +131,13 @@ export const updateRole = async (request, response) => {
 		UPDATE
 			user
 		SET
-			idUserRoleFK = ?
+			idUserRoleFK = IFNULL(?, idUserRoleFK)
 		WHERE
 			uid = ?
 		`;
 
 	try {
+		
 		const [result] = await pool.query(query, [idUserRoleFK, uid]);
 
 		response.status(200).json(result);
@@ -144,6 +145,8 @@ export const updateRole = async (request, response) => {
 		response.status(500).json(e);
 	}
 };
+
+
 
 export const getAllRoles = async (request, response) => {
 	const query = `
@@ -164,7 +167,48 @@ export const getAllRoles = async (request, response) => {
 	}
 }
 
+export const updateStatus = async (request, response) => {
+	const { uid, status } = request.body;
+	const query = `
+		UPDATE
+			user
+		SET
+			status = IFNULL(?, status)	
+		WHERE
+			uid = ?
+		`;
+	try {
+		const [result] = await pool.query(
+			query,
+			[status, uid]
+		);
+		response.status(200).json(result);
+	} catch (e) {
+		response.status(500).json(e);
+	}
+};	
 
 
-
+export const updateRoleAndStatus = async (request, response) => {
+	const { uid, idUserRoleFK, status } = request.body;
+	const query = `
+		UPDATE
+			user
+		SET
+			idUserRoleFK = IFNULL(?, idUserRoleFK),
+			status = IFNULL(?, status)
+		WHERE
+			uid = ?
+		`;
+	try {
+		const [result] = await pool.query(
+			query,
+			[idUserRoleFK, status, uid]
+		);
+		response.status(200).json(result);
+	}
+	catch (e) {
+		response.status(500).json(e);
+	}
+};
 

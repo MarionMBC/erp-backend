@@ -93,3 +93,77 @@ export const getUsersCount = async (request, response) => {
 		response.status(500).json(e);
 	}
 };
+
+
+export const getAllUsers = async (request, response) => {
+/* 	const { page, rowsPerPage } = request.body; */
+	const query = `
+		SELECT 
+			user.id as id,
+			user.username as username,
+			user.email as email,
+			roles.name as userRole,
+			user.status as userStatus
+		FROM
+			user
+		INNER JOIN
+			roles
+		ON 
+			user.idUserRoleFK = roles.id
+		ORDER BY
+			user.id ASC
+		`;
+
+	try {
+		const [result] = await pool.query(query);
+
+		response.status(200).json(result);
+	} catch (e) {
+		response.status(500).json(e);
+	}
+}
+
+export const updateRole = async (request, response) => {
+	const { uid, idUserRoleFK } = request.body;
+
+	const query = `
+		UPDATE
+			user
+		SET
+			idUserRoleFK = ?
+		WHERE
+			uid = ?
+		`;
+
+	try {
+		const [result] = await pool.query(query, [idUserRoleFK, uid]);
+
+		response.status(200).json(result);
+	} catch (e) {
+		response.status(500).json(e);
+	}
+};
+
+export const getAllRoles = async (request, response) => {
+	const query = `
+		SELECT 
+			roles.id as id,
+			roles.name as name
+			roles.status as status
+		FROM
+			roles
+		`;
+
+	try {
+		const [result] = await pool.query(query);
+
+		response.status(200).json(result);
+	} catch (e) {
+		response.status(500).json(e);
+	}
+}
+
+
+
+
+

@@ -198,7 +198,7 @@ export const updateRoleAndStatus = async (request, response) => {
 			idUserRoleFK = IFNULL(?, idUserRoleFK),
 			status = IFNULL(?, status)
 		WHERE
-			uid = ?
+			uid = ? and idUserRoleFK != 7
 		`;
 	try {
 		const [result] = await pool.query(
@@ -208,7 +208,10 @@ export const updateRoleAndStatus = async (request, response) => {
 		response.status(200).json(result);
 	}
 	catch (e) {
-		response.status(500).json(e);
+		response.status(500).json({
+			message: "Error al actualizar el usuario",
+			error: e
+		});
 	}
 };
 

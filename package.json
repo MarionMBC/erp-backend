@@ -2,7 +2,7 @@
   "name": "syncpro",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -33,11 +33,5 @@
     "nodemon": "^2.0.22",
     "uid": "^2.0.2",
     "web-push": "^3.6.4"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.22.10",
-    "@babel/core": "^7.22.10",
-    "@babel/plugin-syntax-import-attributes": "^7.22.5",
-    "@babel/preset-env": "^7.22.10"
   }
 }

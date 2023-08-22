@@ -149,7 +149,7 @@ export const getAllRoles = async (request, response) => {
 	const query = `
 		SELECT 
 			roles.id as id,
-			roles.name as name
+			roles.name as name,
 			roles.status as status
 		FROM
 			roles

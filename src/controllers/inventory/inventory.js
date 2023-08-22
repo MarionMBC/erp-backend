@@ -3,9 +3,9 @@ import pool from "../../config/database.js";
 export const getInventory = async (request, response) => {
 	const query = `
 		SELECT 
-			id,
-			idProductFK,
-            quantityInStock
+			inventory.id,
+			inventory.idProductFK,
+            inventory.quantityInStock
 		FROM
 			inventory
 		JOIN

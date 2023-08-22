@@ -8,6 +8,12 @@ export const getInventory = async (request, response) => {
             quantityInStock
 		FROM
 			inventory
+		JOIN
+			products
+		ON 
+			products.id = inventory.idProductFK
+		WHERE 
+			products.status = 1
 		`;
 
 	try {

@@ -99,6 +99,7 @@ export const getAllUsers = async (request, response) => {
 /* 	const { page, rowsPerPage } = request.body; */
 	const query = `
 		SELECT 
+			user.uid as uid,
 			user.id as id,
 			user.username as username,
 			user.email as email,

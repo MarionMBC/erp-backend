@@ -1,7 +1,7 @@
 export const apps = 
     {
         name: 'syncpro',
-        script: 'server.js',
+        script: 'index.js',
         watch: true,
         env: {
             NODE_ENV: 'production'

@@ -12,10 +12,8 @@ export const getPurchaseOrders = async (req, res) => {
         	purchaseOrder.idSellerFK AS idSellerFK,
 			user.username AS username,
         	purchaseOrder.purchaseOrderDate AS purchaseOrderDate,
-        	purchaseOrder.taxablePrice AS taxablePrice,
-        	purchaseOrder.taxExemptPrice AS taxExemptPrice,
         	purchaseOrder.salesTax AS salesTax,
-        	purchaseOrder.subTotal AS subTotal,
+			purchaseOrder.taxExemptPrice AS taxExemptPrice,
         	purchaseOrder.total AS total,
         	IF(purchaseOrder.status = 0, 'Pendiente', 'Realizada') AS status
         FROM 
@@ -51,10 +49,8 @@ export const getPurchaseOrderById = async (req, res) => {
 			idCustomerFK,
 			idSellerFK,
 			purchaseOrderDate,
-			taxablePrice,
-			taxExemptPrice,
 			salesTax,
-			subTotal,
+			taxExemptPrice,
 			total,
 			status
         FROM 
@@ -78,12 +74,10 @@ export const addPurchaseOrder = async (req, res) => {
 		const {
 			idCustomerFK,
 			idSellerFK,
-			taxablePrice,
-			taxExemptPrice,
 			salesTax,
-			subTotal,
+			taxExemptPrice,
 			total,
-			status,
+			status, 
 		} = req.body;
 
 		const query = `
@@ -92,24 +86,20 @@ export const addPurchaseOrder = async (req, res) => {
 			purchaseOrder 
 				(idCustomerFK,
 				idSellerFK,
-				taxablePrice,
-				taxExemptPrice,
 				salesTax,
-				subTotal,
+				taxExemptPrice,
 				total,
 				status)
-		VALUES (?,?,?,?,?,?,?,?)
+		VALUES (?,?,?,?,?,?)
 		`;
 
 		const [result] = await pool.query(query, [
 			idCustomerFK,
 			idSellerFK,
-			taxablePrice,
-			taxExemptPrice,
 			salesTax,
-			subTotal,
+			taxExemptPrice,
 			total,
-			status,
+			status, 
 		]);
 
 		return res.status(200).json(result);
